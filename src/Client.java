@@ -6,11 +6,11 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class KingTokyoPowerUpClient {
+public class Client {
 
 	private Scanner sc = new Scanner(System.in);
 
-	public KingTokyoPowerUpClient(boolean bot) {
+	public Client(boolean bot) {
 		String name = "";
 		Random rnd = ThreadLocalRandom.current();
 		// Server stuffs
@@ -65,10 +65,10 @@ public class KingTokyoPowerUpClient {
 	}
 
 	public static void main(String argv[]) {
-		KingTokyoPowerUpClient client;
+		Client client;
 		if (argv.length != 0) // Syntax: java KingTokyoPowerUpClient bot
-			client = new KingTokyoPowerUpClient(true);
+			client = new Client(true);
 		else
-			client = new KingTokyoPowerUpClient(false);
+			client = new Client(false);
 	}
 }
