@@ -1,4 +1,6 @@
-class Card {
+package card;
+
+public class Card {
 	public String name;
 	public int cost;
 	public boolean discard;

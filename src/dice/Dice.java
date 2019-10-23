@@ -1,4 +1,6 @@
-class Dice implements Comparable<Dice> {
+package dice;
+
+public class Dice implements Comparable<Dice> {
 	public static final int HEART = 0;
 	public static final int ENERGY = 4;
 	public static final int CLAWS = 5;

@@ -1,7 +1,9 @@
+package card;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
-class Deck {
+public class Deck {
 	public ArrayList<Card> deck = new ArrayList<Card>();
 	public Card[] store = new Card[3];
 
