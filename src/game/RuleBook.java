@@ -11,6 +11,7 @@ public class RuleBook {
 	private static final Dice HEART = new Dice(Dice.HEART);
 	private static final Dice CLAW = new Dice(Dice.CLAWS);
 	private static final Dice ENERGY = new Dice(Dice.ENERGY);
+	private static final int VICTORY_STARS = 20;
 	private ArrayList<Monster> monsters;
 
 	public RuleBook(ArrayList<Monster> monsters) {
@@ -118,12 +119,15 @@ public class RuleBook {
 			currMon.energy += result.get(ENERGY).intValue();
 	}
 
-	// Determines if the game has ended according to the rules
+	/**
+	 * Determines if the game has ended by checking the win conditions
+	 * @return if the game has ended
+	 */
 	public boolean endOfGame() {
 		int alive = 0;
 		String aliveMonster = "";
 		for (int mon = 0; mon < monsters.size(); mon++) {
-			if (monsters.get(mon).stars >= 20) {
+			if (monsters.get(mon).stars >= VICTORY_STARS) {
 				for (int i = 0; i < monsters.size(); i++) {
 					Server.sendMessage(monsters.get(i), "Victory: " + monsters.get(mon).name + " has won by stars\n");
 				}
