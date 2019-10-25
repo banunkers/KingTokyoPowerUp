@@ -1,50 +1,85 @@
 package monster;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
-
-import card.Card;
-import card.Effect;
-
-public class Monster {
-	public int maxHealth = 10;
-	public int currentHealth = 10;
-	public String name;
-	public int energy = 0;
-	public int stars = 0;
-	public boolean inTokyo = false;
-	public ArrayList<Card> cards = new ArrayList<Card>();
-	public Socket connection = null;
-	public BufferedReader inFromClient = null;
-	public DataOutputStream outToClient = null;
+/**
+ * The super class of all monsters in the game
+ */
+public abstract class Monster {
+	private int maxHealth = 10;
+	private int currentHealth = 10;
+	private String name;
+	private int energy = 0;
+	private int stars = 0;
+	private boolean inTokyo = false;
 
 	public Monster(String name) {
-		this.name = name; 
+		this.name = name;
 	}
 
-	// search all available cards and return the effect value of an effect
-	public int cardEffect(String effectName) {
-		for (int i = 0; i < cards.size(); i++){
-			try {
-				// Find variable by "name"
-				if (Effect.class.getField(effectName).getInt(cards.get(i).effect) > 0) {
-					return Effect.class.getField(effectName).getInt(cards.get(i).effect);
-				}
-			} catch (Exception e) {
-			}
-		}
-		return 0;
+	public int getStars() {
+		return stars;
 	}
 
-	public String cardsToString() {
-		String returnString = "";
-		if (cards.size() == 0)
-			return "[NO CARDS]:";
-		for (int i = 0; i < cards.size(); i++) {
-			returnString += "\t[" + i + "] " + cards.get(i) + ":";
+	public void incStars(int stars) {
+		this.stars += stars;
+	}
+
+	public void decStars(int stars) {
+		this.stars -= stars;
+	}
+
+	public int getEnergy() {
+		return energy;
+	}
+
+	public void incEnergy(int energy) {
+		this.energy += energy;
+	}
+
+	public void decEnergy(int energy) {
+		this.energy -= energy;
+	}
+
+	public boolean isInTokyo() {
+		return inTokyo;
+	}
+
+	public void setInTokyo(boolean inTokyo) {
+		this.inTokyo = inTokyo;
+	}
+
+	public int getHealth() {
+		return currentHealth;
+	}
+
+	public boolean isAlive() {
+		return currentHealth > 0 ? true : false;
+	}
+
+	public void incHealth(int health) {
+		if (currentHealth + health > maxHealth) {
+			currentHealth = maxHealth;
+		} else {
+			currentHealth += health;
 		}
-		return returnString;
+	}
+
+	public void decHealth(int health) {
+		if (currentHealth - health < 0) {
+			currentHealth = 0;
+		} else {
+			currentHealth -= health;
+		}
+	}
+
+	public void setMaxHealth(int health) {
+		maxHealth = health;
+	}
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public String getName() {
+		return name;
 	}
 }

@@ -10,51 +10,68 @@ import java.util.Scanner;
 
 import game.Game;
 import monster.Monster;
+import monster.MonsterFactory;
+import player.Player;
 
 public class Server {
 	private static Scanner sc = new Scanner(System.in);
-	private ArrayList<Monster> monsters = new ArrayList<Monster>();
+	private MonsterFactory monFactory = new MonsterFactory();
+	private ArrayList<Player> players = new ArrayList<Player>();
 	
 	/**
-	 * @param args the command line arguments
+	 * Starts a King of Tokyo: Power Up server with the specified number of players
+	 * @param args the number of players
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) {
-		// TODO code application logic here
-		// https://www.youtube.com/watch?v=HqdOaAzPtek
-		// https://boardgamegeek.com/thread/1408893/categorizing-cards
-		new Server();
+	public static void main(String[] args) throws Exception {
+		int numPlayers;
+		try {
+			numPlayers = Integer.parseInt(args[0]);
+		} catch (Exception e) {
+			throw new Exception("Please supply the server with number the of players as an argument: \'java Server <num players>\'");
+		}
+		
+		if (numPlayers < 2) {
+			throw new Exception("The number of players needs to be at least 2");
+		}
+		new Server(numPlayers);
 	}
 
-	public Server() {
-		Monster kong = new Monster("Kong");
-		Monster gigazaur = new Monster("Gigazaur");
-		Monster alien = new Monster("Alienoid");
-		monsters.add(kong);
-		monsters.add(gigazaur);
-		monsters.add(alien);
+	public Server(int numPlayers) throws Exception {
+		ArrayList<Monster> monsters = new ArrayList<Monster>();
+		try {
+			monsters = monFactory.getMonsters(numPlayers);
+		} catch (Exception e) {
+			throw e;
+		}
+
+		for (Monster monster : monsters) {
+			players.add(new Player(monster));
+		}
 
 		// Server stuffs
 		try {
 			ServerSocket aSocket = new ServerSocket(2048);
-			// assume two online clients
-			for (int onlineClient = 0; onlineClient < 2; onlineClient++) {
+			for (int onlineClient = 0; onlineClient < numPlayers; onlineClient++) {
+				Monster mon = players.get(onlineClient).getMonster();
 				Socket connectionSocket = aSocket.accept();
 				BufferedReader inFromClient = new BufferedReader(
 						new InputStreamReader(connectionSocket.getInputStream()));
 				DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-				outToClient.writeBytes("You are the monster: " + monsters.get(onlineClient).name + "\n");
-				monsters.get(onlineClient).connection = connectionSocket;
-				monsters.get(onlineClient).inFromClient = inFromClient;
-				monsters.get(onlineClient).outToClient = outToClient;
-				System.out.println("Connected to " + monsters.get(onlineClient).name);
+				outToClient.writeBytes("You are the monster: " + mon.getName() + "\n");
+				players.get(onlineClient).connection = connectionSocket;
+				players.get(onlineClient).inFromClient = inFromClient;
+				players.get(onlineClient).outToClient = outToClient;
+				System.out.println("Connected to " + mon.getName());
 			}
 		} catch (Exception e) {
+			throw e;
 		}
 
-		new Game(monsters);
+		new Game(players);
 	}
 
-	public static String sendMessage(Monster recipient, String message) {
+	public static String sendMessage(Player recipient, String message) {
 		String response = "";
 		if (recipient.connection != null) {
 			try {
