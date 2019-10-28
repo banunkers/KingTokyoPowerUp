@@ -3,6 +3,7 @@ package game;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import card.storecard.Deck;
 import dice.Dice;
 import dice.Util;
 import monster.Monster;
@@ -22,7 +23,6 @@ public class RuleBook {
 	private Util diceUtil = new Util();
 	private ArrayList<Player> players;
 	private ArrayList<Monster> monsters = new ArrayList<Monster>();
-	private boolean firstRoll = true;
 
 	public RuleBook(ArrayList<Player> players) {
 		this.players = players;
@@ -33,12 +33,12 @@ public class RuleBook {
 
 	/**
 	 * Handles the rolling phase of the game for each player.
-	 * Lets the player decide what to reroll twice.
+	 * Lets the player choose if they want to reroll
 	 * @param player the player whos turn it is
 	 * @param dice the six rolled dice
 	 * @return	an array list containing the rerolled dice
 	 */
-	public void rollPhase(Player player, ArrayList<Dice> dice) {
+	public void rollPhase(Player player, ArrayList<Dice> dice, GamePhase gamePhase) {
 		String rolledDice = "ROLLED: You rolled:\t[1]\t[2]\t[3]\t[4]\t[5]\t[6]:";
 		for (int allDice = 0; allDice < dice.size(); allDice++) {
 			rolledDice += "\t[" + dice.get(allDice) + "]";
@@ -51,13 +51,6 @@ public class RuleBook {
 		if (Integer.parseInt(reroll[0]) != 0) {
 			diceUtil.reroll(dice, reroll);
 		}
-
-		if (firstRoll) {
-			firstRoll = false;
-			rollPhase(player, dice);
-		} else {
-			firstRoll = true;
-		}
 	}
 
 	/**
@@ -65,11 +58,10 @@ public class RuleBook {
 	 * @param currMonID the ID of monster who rolled the dice
 	 * @param result the rolled dice
 	 */
-	public void resolveDice(int currPlayerID, HashMap<Dice, Integer> result) {
+	public void resolveDice(int currPlayerID, HashMap<Dice, Integer> result, GamePhase gamePhase) {
 		Player currPlayer = players.get(currPlayerID);
 		Monster currMon = currPlayer.getMonster();
-		// 6a. Hearts = health (max 10 unless a cord increases it)
-		// TODO: make monster incHealth(int amount)
+		
 		if (result.containsKey(HEART)) { 
 			if (!currMon.isInTokyo()) {	
 				// +1 currentHealth per heart, up to max health
@@ -116,16 +108,15 @@ public class RuleBook {
 				}
 			}
 		}	
-		// 6d. claws = attack (if in Tokyo attack everyone, else attack monster in
-		// Tokyo)
+		// claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
 		if (result.containsKey(CLAW)) {
-			currMon.incStars(currPlayer.cardEffect("starsWhenAttacking")); // Alpha Monster
+			gamePhase.setPhase(Phase.ATTACKING, currMon, null);	// Trigger any attacking effects
+			currMon.setTotalDamage(result.get(CLAW).intValue());
 			if (currMon.isInTokyo()) {
 				for (int mon = 0; mon < monsters.size(); mon++) {
-					int moreDamage = currPlayer.cardEffect("moreDamage"); // Acid Attack
-					int totalDamage = result.get(CLAW).intValue() + moreDamage;
-					if (monsters.get(mon) != currMon && totalDamage > players.get(mon).cardEffect("armor")) { // Armor Plating
-						monsters.get(mon).decHealth(totalDamage);
+					if (monsters.get(mon) != currMon) {
+						gamePhase.setPhase(Phase.TAKING_DAMAGE, monsters.get(mon), currMon); // Trigger defensive effects of attacked monster
+						monsters.get(mon).decHealth(currMon.getTotalDamage());
 					}
 				}
 			} else {
@@ -133,22 +124,21 @@ public class RuleBook {
 				for (int mon = 0; mon < monsters.size(); mon++) {
 					if (monsters.get(mon).isInTokyo()) {
 						monsterInTokyo = true;
-						int moreDamage = currPlayer.cardEffect("moreDamage"); // Acid Attack
-						int totalDamage = result.get(CLAW).intValue() + moreDamage;
-						if (totalDamage > players.get(mon).cardEffect("armor")) // Armor Plating
-							monsters.get(mon).decHealth(totalDamage);
-						// 6e. If you were outside, then the monster inside tokyo may decide to leave
-						// Tokyo
+						gamePhase.setPhase(Phase.TAKING_DAMAGE, monsters.get(mon), currMon);
+						monsters.get(mon).decHealth(currMon.getTotalDamage());
+
+						// Promt the attacked user if they want to yield Tokyo to the attacker
 						String answer = Server.sendMessage(players.get(mon), "ATTACKED: You have " + monsters.get(mon).getHealth()
 								+ " health left. Do you wish to leave Tokyo? [YES/NO]\n");
 						if (answer.equalsIgnoreCase("YES")) {
+							gamePhase.setPhase(Phase.YIELDING_TOKYO, monsters.get(mon), null);
 							monsters.get(mon).setInTokyo(false);
 							monsterInTokyo = false;
-							Server.sendMessage(currPlayer, "UPDATE: " + monsters.get(mon).getName() + "yielded Tokyo after your attack. You are now moving into Tokyo...");
 						}
 					}
 				}
 				if (!monsterInTokyo) {
+					gamePhase.setPhase(Phase.TAKING_TOKYO, currMon, null);
 					currMon.setInTokyo(true);
 					currMon.incStars(1);
 				}
@@ -159,11 +149,31 @@ public class RuleBook {
 			currMon.incEnergy(result.get(ENERGY).intValue());
 	}
 
+	public void buy(Player player, Deck deck, GamePhase gamePhase) {
+		Monster monster = player.getMonster();
+		String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have "
+		+ monster.getEnergy() + " energy) [#/-1]:" + deck + "\n";
+		String answer = Server.sendMessage(player, msg);
+		int buy = Integer.parseInt(answer);
+		if ((buy > 0) && (monster.getEnergy() >= (deck.store[buy].getCost()
+				- monster.getCostReduction()))) {
+			if (deck.store[buy].isDiscard()) {
+				gamePhase.setPhase(Phase.DISCARDING, monster, null);
+			} else {
+				monster.addCard(deck.store[buy]);
+			}
+			// Deduct the cost of the card from energy
+			monster.decEnergy(deck.store[buy].getCost() - monster.getCostReduction());
+			// Draw a new card from the deck to replace the card that was bought
+			deck.store[buy] = deck.deck.remove(0);
+		}
+	}
+
 	/**
 	 * Determines if the game has ended by checking the win conditions
 	 * @return if the game has ended
 	 */
-	public boolean endOfGame() {
+	public boolean gameEnded() {
 		int alive = 0;
 		String aliveMonster = "";
 		for (int player = 0; player < players.size(); player++) {

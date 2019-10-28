@@ -1,0 +1,13 @@
+package game;
+
+public enum Phase {
+	START,
+	ROLLING,
+	RESOLVING,
+	ATTACKING,
+	BUYING,
+	YIELDING_TOKYO,
+	TAKING_TOKYO,
+	DISCARDING, 
+	TAKING_DAMAGE,
+}

@@ -51,6 +51,8 @@ public class Client {
 						outToServer.writeBytes("-1\n");
 					else
 						outToServer.writeBytes(sc.nextLine() + "\n");
+				} else if (message[0].equalsIgnoreCase("UPDATE")) {
+					System.out.println(sc.nextLine() + "\n");
 				} else {
 					if (bot)
 						outToServer.writeBytes("OK\n");

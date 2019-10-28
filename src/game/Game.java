@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import card.Deck;
+import card.storecard.Deck;
 import dice.Dice;
 import dice.Util;
 import monster.Monster;
@@ -16,13 +16,15 @@ public class Game {
 	private ArrayList<Player> players;
 	private Util diceUtil = new Util();
 	private RuleBook ruleBook;
-	
+	private ArrayList<Dice> dice;
+
 	public Game(ArrayList<Player> players) {
 		this.players = players;
 		// Shuffle the starting order
 		Collections.shuffle(players);
 		this.ruleBook = new RuleBook(players);
 		Deck deck = new Deck();
+		GamePhase gamePhase = new GamePhase();
 		
 		// Game loop
 		while (true) {
@@ -44,8 +46,11 @@ public class Game {
 				statusUpdate(currPlayer);
 
 				// Begin the roll phase which involves two chances to reroll
-				ArrayList<Dice> dice = diceUtil.roll(6);
-				ruleBook.rollPhase(currPlayer, dice);
+				dice = diceUtil.roll(6);
+				ruleBook.rollPhase(currPlayer, dice, gamePhase);
+				gamePhase.setPhase(Phase.ROLLING, currMon, null);
+				ruleBook.rollPhase(currPlayer, dice, gamePhase);
+				gamePhase.setPhase(Phase.ROLLING, currMon, null);
 				
 				// Sum up dice
 				diceUtil.sort(dice);
@@ -56,28 +61,15 @@ public class Game {
 				Server.sendMessage(currPlayer, "ROLLED:You rolled " + result + " Press [ENTER]\n");
 
 				// Resolve the dice
-				ruleBook.resolveDice(currPlayerID, result);
-				
+				ruleBook.resolveDice(currPlayerID, result, gamePhase);
+				gamePhase.setPhase(Phase.RESOLVING, currMon, null);
+
 				// Decide to buy things for energy
-				String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have "
-						+ currMon.getEnergy() + " energy) [#/-1]:" + deck + "\n";
-				String answer = Server.sendMessage(currPlayer, msg);
-				int buy = Integer.parseInt(answer);
-				if (buy > 0 && (currMon.getEnergy() >= (deck.store[buy].cost
-						- currPlayer.cardEffect("cardsCostLess")))) { // Alien Metabolism
-					if (deck.store[buy].discard) {
-						// 7a. Play "DISCARD" cards immediately
-						currMon.incStars(deck.store[buy].effect.stars);
-					} else
-						currPlayer.cards.add(deck.store[buy]);
-					// Deduct the cost of the card from energy
-					currMon.decEnergy(deck.store[buy].cost - currPlayer.cardEffect("cardsCostLess")); // Alient
-																													// Metabolism
-					// Draw a new card from the deck to replace the card that was bought
-					deck.store[buy] = deck.deck.remove(0);
-				}
+				gamePhase.setPhase(Phase.BUYING, currMon, null);
+				ruleBook.buy(currPlayer, deck, gamePhase);
+
 				// 8. Check victory conditions
-				if (ruleBook.endOfGame()) {
+				if (ruleBook.gameEnded()) {
 					System.exit(0);
 				}
 			}
@@ -93,7 +85,7 @@ public class Game {
 			status_update += "with " + mon.getHealth() + " health, "
 					+ mon.getStars() + " stars, ";
 			status_update += mon.getEnergy() + " energy, and owns the following cards:";
-			status_update += players.get(count).cardsToString();
+			status_update += mon.cardsToString();
 		}
 		Server.sendMessage(player, status_update + "\n");
 	}
