@@ -6,7 +6,9 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import card.evolutioncard.EvolCard;
 import card.evolutioncard.implemented.kong.IronCurtain;
+import card.evolutioncard.implemented.kong.RedDawn;
 import game.GamePhase;
 import player.Player;
 import monster.Monster;
@@ -19,10 +21,6 @@ public class KongTests {
 		Player otherPlayer = new Player(new Alienoid());
 		Monster kong = kongPlayer.getMonster();
 		Monster otherMon = otherPlayer.getMonster();
-		
-		ArrayList<Player> players = new ArrayList<Player>();
-		players.add(kongPlayer);
-		players.add(otherPlayer);
 
 		ArrayList<Monster> monsters = new ArrayList<Monster>();
 		monsters.add(kong);
@@ -30,11 +28,35 @@ public class KongTests {
 
 		// Give Kong Iron Curtain evolution card
 		kong.addActiveEvolCard(new IronCurtain(monsters));
-		System.out.println(kong.getActiveEvolCards());
 		
 		GamePhase gamePhase = new GamePhase(monsters);
-		System.out.println(monsters);
 		otherMon.setInTokyo(gamePhase, false);	// Other monster yields Tokyo
-		assertEquals(9, otherMon.getHealth());
+		assertEquals(otherMon.getMaxHealth() - 1, otherMon.getHealth());	// other monster should have lost 1 health
+		kong.setInTokyo(gamePhase, true);
+		assertEquals(kong.getMaxHealth(), kong.getHealth());
+		kong.setInTokyo(gamePhase, false);	// Kong yields Tokyo
+		assertEquals(kong.getMaxHealth(), kong.getHealth());	// Kong should still be at full health
+	}
+
+	@Test
+	public void redDawn() {
+		Player kongPlayer = new Player(new Kong());
+		Player otherPlayer = new Player(new Alienoid());
+		Monster kong = kongPlayer.getMonster();
+		Monster otherMon = otherPlayer.getMonster();
+
+		ArrayList<Monster> monsters = new ArrayList<Monster>();
+		monsters.add(kong);
+		monsters.add(otherMon);
+
+		// Give Kong Red Dawn evolution card
+		ArrayList<EvolCard> evolCards = new ArrayList<EvolCard>();
+		evolCards.add(new RedDawn(monsters));
+		kong.setEvolCards(evolCards);
+		
+		// Activate and assert
+		kong.activateEvolCard();
+		assertEquals(kong.getMaxHealth(), kong.getHealth());	// Kong still full health
+		assertEquals(otherMon.getMaxHealth() - 2, otherMon.getHealth());	// Other monster damaged for 2
 	}
 }

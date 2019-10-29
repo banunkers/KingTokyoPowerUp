@@ -110,23 +110,33 @@ public abstract class Monster {
 	}
 
 	/**
-	 * Adds an evolution card to the monsters active evolutions
+	 * Adds an evolution card to the monsters active evolutions and checks if it should be triggered
 	 * @param activatedEvol the evolution card to add
 	 */
 	public void addActiveEvolCard(EvolCard activatedEvol) {
 		this.activeEvolCards.add(activatedEvol);
+		activatedEvol.getEffect().trigger(this, this, null);
 	}
 
 	/**
-	 * Activates one of the monsters evolution cards
-	 * @return the activated evolution or null if no evol card could be activated
+	 * Activates one of the monsters evolution cards, if its a temporary evolution card
+	 * it will be played directly.
+	 * 
+	 * @return the activated evolution card or null if the monster didn't
+	 * have any evolution card to activate
 	 */
 	public EvolCard activateEvolCard() {
 		EvolCard activated = null;
 		if (evolCards.size() > 0) {
 			activated = evolCards.remove(0);
+			if (activated.isTemporary()) {
+				activated.getEffect().trigger(this, null, null);
+			} else {
+				this.addActiveEvolCard(activated);
+			}
+			return activated;
 		}
-		return activated;
+		return null;
 	}
 
 	/**

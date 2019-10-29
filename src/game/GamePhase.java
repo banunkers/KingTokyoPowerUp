@@ -12,7 +12,6 @@ public class GamePhase {
 	private ArrayList<Monster> monsters;
 
 	public GamePhase(ArrayList<Monster> monsters) {
-		currPhase = Phase.START;
 		this.monsters = monsters;
 	}
 

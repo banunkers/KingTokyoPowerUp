@@ -66,20 +66,15 @@ public class RuleBook {
 				// +1 currentHealth per heart, up to max health
 				currMon.incHealth(result.get(HEART).intValue());
 			}
-			// 6b. 3 hearts = power-up
+			// 3 hearts = power-up
 			if (result.get(HEART).intValue() >= 3) {
 				EvolCard activatedEvol = currMon.activateEvolCard();
-				if (activatedEvol != null) {
+				if (activatedEvol != null) {	// Make the player aware that an evolution card was activated
 					Server.sendMessage(currPlayer, "POWERUP:" + activatedEvol.toString() + "\n");
-					if (activatedEvol.isTemporary()) { // Trigger the effect if its a temporary evolution card
-						activatedEvol.getEffect().trigger(currMon, null, gamePhase.getPhase());
-					} else {
-						currMon.addActiveEvolCard(activatedEvol); // Store the evolution card if its permanent
-					}
 				}
 			}
 		}
-		// 6c. 3 of a number = victory points
+		// 3 or more of a number = victory points
 		for (int num = 1; num < 4; num++) {
 			if (result.containsKey(new Dice(num))) {
 				int numDice = result.get(new Dice(num)).intValue();
@@ -121,7 +116,11 @@ public class RuleBook {
 					currMon.incStars(1);
 				}
 			}
+		} else {
+			// Trigger cards which do not require any rolled CLAWS to still take effect i.e. AcidAttack
+			gamePhase.setPhase(Phase.ATTACKING_NO_CLAW, currMon, null);
 		}
+		
 		// 6f. energy = energy tokens
 		if (result.containsKey(ENERGY))
 			currMon.incEnergy(result.get(ENERGY).intValue());

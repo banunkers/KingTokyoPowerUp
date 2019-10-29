@@ -37,6 +37,8 @@ public class Game {
 			for (int currPlayerID = 0; currPlayerID < players.size(); currPlayerID++) {
 				Player currPlayer = players.get(currPlayerID);
 				Monster currMon = currPlayer.getMonster();
+
+				gamePhase.setPhase(Phase.START, currMon, null);
 				
 				// Skip if the monster is already dead
 				if (!currMon.isAlive()) {

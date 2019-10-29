@@ -18,7 +18,7 @@ public class AcidAttackEffect extends StoreEffect {
 
 	@Override
 	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
-		if (phase == Phase.ATTACKING) {
+		if (!done && phase == Phase.ATTACKING) {
 			trigger(monster, null);
 			done = true;
 		} else if (phase == Phase.ATTACKING_NO_CLAW) {
@@ -27,9 +27,17 @@ public class AcidAttackEffect extends StoreEffect {
 	}
 
 	private void triggerNoClaw(Monster monster) {
-		for (Monster mon : monsters) {
-			if (!mon.equals(monster)) {
-				mon.decHealth(1);
+		if (monster.isInTokyo()) {
+			for (Monster mon : monsters) {
+				if (!mon.equals(monster)) {
+					mon.decHealth(1);
+				}
+			}
+		} else {
+			for (Monster mon : monsters) {
+				if (mon.isInTokyo()) {
+					mon.decHealth(1);
+				}
 			}
 		}
 	}

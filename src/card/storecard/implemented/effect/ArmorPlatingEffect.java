@@ -17,7 +17,7 @@ public class ArmorPlatingEffect extends StoreEffect {
 
 	@Override
 	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
-		if (!done && phase == Phase.TAKING_DAMAGE) {
+		if (!done) {
 			trigger(monster, attacker);
 			done = true;
 		}
@@ -26,6 +26,6 @@ public class ArmorPlatingEffect extends StoreEffect {
 	@Override
 	protected void trigger(Monster monster, Monster attacker) {
 		// Inc the armor of monster to "ignore" damage of 1
-		attacker.incArmor(1);
+		monster.incArmor(1);
 	}
 }
