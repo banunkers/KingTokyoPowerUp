@@ -1,7 +1,7 @@
 package card.storecard.implemented;
 
 import card.storecard.StoreCard;
-import card.storecard.effect.implemented.ArmorPlatingEffect;
+import card.storecard.implemented.effect.ArmorPlatingEffect;
 
 public class ArmorPlating extends StoreCard {
 

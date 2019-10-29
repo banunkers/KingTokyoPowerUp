@@ -1,14 +1,16 @@
-package card.storecard;
+package card;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import card.storecard.StoreCard;
 
 public class Deck {
 	public ArrayList<StoreCard> deck;
 	public StoreCard[] store = new StoreCard[3];
 
 	public Deck() {
-		StoreCardFactory cardFactory = new StoreCardFactory();
+		CardFactory cardFactory = new CardFactory();
 		deck = cardFactory.getStoreCards();
 		Collections.shuffle(deck);
 		

@@ -1,7 +1,7 @@
 package card.storecard.implemented;
 
 import card.storecard.StoreCard;
-import card.storecard.effect.implemented.AlienMetabolismEffect;
+import card.storecard.implemented.effect.AlienMetabolismEffect;
 
 public class AlienMetabolism extends StoreCard {
 

@@ -1,6 +1,6 @@
-package card.storecard.effect.implemented;
+package card.storecard.implemented.effect;
 
-import card.storecard.effect.Effect;
+import card.Effect;
 import game.Phase;
 import monster.Monster;
 

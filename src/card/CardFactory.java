@@ -1,14 +1,16 @@
-package card.storecard;
+package card;
 
 import java.util.ArrayList;
 
+import card.evolutioncard.EvolutionCard;
+import card.storecard.StoreCard;
 import card.storecard.implemented.*;
 import monster.Monster;
 
 /**
  * Creates all of the implemented store cards
  */
-public class StoreCardFactory {
+public class CardFactory {
 
 	/**
 	 * Creates an array list containing all of the currently implemented store cards
@@ -31,8 +33,8 @@ public class StoreCardFactory {
 	 * for the specified monster
 	 * @return the array list of cards
 	 */
-	public ArrayList<StoreCard> getEvolCards(Monster monster) {
-		ArrayList<StoreCard> cards = new ArrayList<StoreCard>();
+	public ArrayList<EvolutionCard> getEvolCards(Monster monster) {
+		ArrayList<EvolutionCard> cards = new ArrayList<EvolutionCard>();
 		return cards;
 	}
 }

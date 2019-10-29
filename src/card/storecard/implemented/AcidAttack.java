@@ -1,7 +1,7 @@
 package card.storecard.implemented;
 
 import card.storecard.StoreCard;
-import card.storecard.effect.implemented.AcidAttackEffect;
+import card.storecard.implemented.effect.AcidAttackEffect;
 
 public class AcidAttack extends StoreCard {
 

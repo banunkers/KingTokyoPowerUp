@@ -1,7 +1,7 @@
 package card.storecard.implemented;
 
 import card.storecard.StoreCard;
-import card.storecard.effect.implemented.ComuterTrainEffect;
+import card.storecard.implemented.effect.ComuterTrainEffect;
 
 public class ComuterTrain extends StoreCard {
 	public ComuterTrain() {

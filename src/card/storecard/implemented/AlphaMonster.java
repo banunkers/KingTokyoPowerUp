@@ -1,7 +1,7 @@
 package card.storecard.implemented;
 
 import card.storecard.StoreCard;
-import card.storecard.effect.implemented.AlphaMonsterEffect;
+import card.storecard.implemented.effect.AlphaMonsterEffect;
 
 public class AlphaMonster extends StoreCard {
 	public AlphaMonster() {

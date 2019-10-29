@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import card.storecard.Deck;
+import card.Deck;
 import dice.Dice;
 import dice.Util;
 import monster.Monster;

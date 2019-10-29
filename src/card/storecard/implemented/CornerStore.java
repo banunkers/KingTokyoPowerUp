@@ -1,7 +1,7 @@
 package card.storecard.implemented;
 
 import card.storecard.StoreCard;
-import card.storecard.effect.implemented.CornerStoreEffect;
+import card.storecard.implemented.effect.CornerStoreEffect;
 
 public class CornerStore extends StoreCard {
 	public CornerStore() {

@@ -1,23 +1,25 @@
-package card.storecard.effect.implemented;
+package card.storecard.implemented.effect;
 
-import card.storecard.effect.Effect;
+import card.Effect;
 import game.Phase;
 import monster.Monster;
 
 /**
- * Alpha Monster: Gain 1[Star] when you attack
+ * Apartment Building: Discard, + 3[Star]
  */
-public class AlphaMonsterEffect extends Effect {
+public class ApartmentBuildingEffect extends Effect {
 
 	@Override
 	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
-		if (phase == Phase.ATTACKING) {
+		if (phase == Phase.DISCARDING) {
 			trigger(monster, null);
 		}
+
 	}
 
 	@Override
 	protected void trigger(Monster monster, Monster attacker) {
-		monster.incStars(1);
+		monster.incStars(3);
 	}
+
 }

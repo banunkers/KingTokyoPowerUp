@@ -3,7 +3,7 @@ package game;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import card.storecard.Deck;
+import card.Deck;
 import dice.Dice;
 import dice.Util;
 import monster.Monster;

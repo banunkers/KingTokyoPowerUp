@@ -1,13 +1,13 @@
-package card.storecard.effect.implemented;
+package card.storecard.implemented.effect;
 
-import card.storecard.effect.Effect;
+import card.Effect;
 import game.Phase;
 import monster.Monster;
 
 /**
- * Corner Stone: Discard, + 1[Star]
+ * Comuter Train: Discard,  + 2[Star]
  */
-public class CornerStoreEffect extends Effect {
+public class ComuterTrainEffect extends Effect {
 
 	@Override
 	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
@@ -18,7 +18,7 @@ public class CornerStoreEffect extends Effect {
 
 	@Override
 	protected void trigger(Monster monster, Monster attacker) {
-		monster.incStars(1);
+		monster.incStars(2);
 	}
 
 }

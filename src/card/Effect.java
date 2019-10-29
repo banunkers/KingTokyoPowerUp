@@ -1,4 +1,4 @@
-package card.storecard.effect;
+package card;
 
 import monster.Monster;
 import game.Phase;

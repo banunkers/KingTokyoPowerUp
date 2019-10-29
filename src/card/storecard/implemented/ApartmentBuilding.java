@@ -1,7 +1,7 @@
 package card.storecard.implemented;
 
 import card.storecard.StoreCard;
-import card.storecard.effect.implemented.ApartmentBuildingEffect;
+import card.storecard.implemented.effect.ApartmentBuildingEffect;
 
 public class ApartmentBuilding extends StoreCard {
 	public ApartmentBuilding() {
