@@ -2,14 +2,14 @@ package card.storecard.implemented.effect;
 
 import java.util.ArrayList;
 
-import card.storecard.Effect;
+import card.storecard.StoreEffect;
 import game.Phase;
 import monster.Monster;
 
 /**
  * Apartment Building: Discard, + 3[Star]
  */
-public class ApartmentBuildingEffect extends Effect {
+public class ApartmentBuildingEffect extends StoreEffect {
 
 	public ApartmentBuildingEffect(ArrayList<Monster> monsters) {
 		super(monsters);

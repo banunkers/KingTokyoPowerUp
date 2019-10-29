@@ -1,13 +1,15 @@
 package card.evolutioncard;
 
-public abstract class EvolutionCard {
+import card.Card;
+
+public abstract class EvolCard implements Card<EvolEffect> {
 	private String name;
 	private int cost;
 	private boolean temporary;
-	private Effect effect;
+	private EvolEffect effect;
 	private String description;
 
-	public EvolutionCard(String name, int cost, boolean temporary, Effect effect, String description) {
+	public EvolCard(String name, int cost, boolean temporary, EvolEffect effect, String description) {
 		this.name = name;
 		this.cost = cost;
 		this.temporary = temporary;
@@ -15,7 +17,7 @@ public abstract class EvolutionCard {
 		this.description = description;
 	}
 
-	public Effect getEffect() {
+	public EvolEffect getEffect() {
 		return effect;
 	}
 

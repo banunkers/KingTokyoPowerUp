@@ -26,7 +26,7 @@ public class Game {
 		}
 		// Shuffle the starting order
 		Collections.shuffle(players);
-		this.ruleBook = new RuleBook(players);
+		this.ruleBook = new RuleBook(players, monsters);
 		Deck deck = new Deck(monsters);
 		GamePhase gamePhase = new GamePhase();
 		
@@ -66,6 +66,7 @@ public class Game {
 
 				// Resolve the dice
 				ruleBook.resolveDice(currPlayerID, result, gamePhase);
+				currMon.setRolledDice(result);
 				gamePhase.setPhase(Phase.RESOLVING, currMon, null);
 
 				// Decide to buy things for energy

@@ -2,14 +2,14 @@ package card.storecard.implemented.effect;
 
 import java.util.ArrayList;
 
-import card.storecard.Effect;
+import card.storecard.StoreEffect;
 import game.Phase;
 import monster.Monster;
 
 /**
  * Alien Metabolism: Buying cards costs you 1 less [Energy].
  */
-public class AlienMetabolismEffect extends Effect {
+public class AlienMetabolismEffect extends StoreEffect {
 
 	public AlienMetabolismEffect(ArrayList<Monster> monsters) {
 		super(monsters);

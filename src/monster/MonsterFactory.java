@@ -45,7 +45,6 @@ public class MonsterFactory {
 		allMonsters.add(new Kong());
 		allMonsters.add(new Kraken());
 		allMonsters.add(new Gigazaur());
-		allMonsters.add(new SpacePenguin());
 
 		return allMonsters;
 	}

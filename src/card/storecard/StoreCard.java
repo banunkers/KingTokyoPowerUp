@@ -1,15 +1,16 @@
 package card.storecard;
 
-import card.storecard.Effect;
+import card.Card;
+import card.storecard.StoreEffect;
 
-public abstract class StoreCard {
+public abstract class StoreCard implements Card<StoreEffect> {
 	private String name;
 	private int cost;
 	private boolean discard;
-	private Effect effect;
+	private StoreEffect effect;
 	private String description;
 
-	public StoreCard(String name, int cost, boolean discard, Effect effect, String description) {
+	public StoreCard(String name, int cost, boolean discard, StoreEffect effect, String description) {
 		this.name = name;
 		this.cost = cost;
 		this.discard = discard;
@@ -17,7 +18,7 @@ public abstract class StoreCard {
 		this.description = description;
 	}
 
-	public Effect getEffect() {
+	public StoreEffect getEffect() {
 		return effect;
 	}
 

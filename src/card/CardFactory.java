@@ -2,7 +2,7 @@ package card;
 
 import java.util.ArrayList;
 
-import card.evolutioncard.EvolutionCard;
+import card.evolutioncard.EvolCard;
 import card.storecard.StoreCard;
 import card.storecard.implemented.*;
 import monster.Monster;
@@ -38,8 +38,8 @@ public class CardFactory {
 	 * for the specified monster
 	 * @return the array list of cards
 	 */
-	public ArrayList<EvolutionCard> getEvolCards(Monster monster) {
-		ArrayList<EvolutionCard> cards = new ArrayList<EvolutionCard>();
+	public ArrayList<EvolCard> getEvolCards(Monster monster) {
+		ArrayList<EvolCard> cards = new ArrayList<EvolCard>();
 		return cards;
 	}
 }

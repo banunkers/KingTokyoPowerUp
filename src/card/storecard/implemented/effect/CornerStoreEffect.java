@@ -2,14 +2,14 @@ package card.storecard.implemented.effect;
 
 import java.util.ArrayList;
 
-import card.storecard.Effect;
+import card.storecard.StoreEffect;
 import game.Phase;
 import monster.Monster;
 
 /**
  * Corner Stone: Discard, + 1[Star]
  */
-public class CornerStoreEffect extends Effect {
+public class CornerStoreEffect extends StoreEffect {
 
 	public CornerStoreEffect(ArrayList<Monster> monsters) {
 		super(monsters);

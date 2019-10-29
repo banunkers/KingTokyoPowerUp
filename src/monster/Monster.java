@@ -1,8 +1,10 @@
 package monster;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import card.storecard.StoreCard;
+import dice.Dice;
 
 /**
  * The super class of all monsters in the game
@@ -16,11 +18,12 @@ public abstract class Monster {
 	private boolean inTokyo = false;
 	private ArrayList<StoreCard> cards = new ArrayList<StoreCard>();
 	private int totalDamage = 0;	// = num claws + more damage modifiers from cards
+	private HashMap<Dice, Integer> rolledDice;
 
 	// Card effect modifiers
 	private int moreDamage = 0;
 	private int costReduction = 0;
-	private int armor;
+	private int armor = 0;
 
 	public Monster(String name) {
 		this.name = name;
@@ -126,11 +129,16 @@ public abstract class Monster {
 		}
 	}
 
+	/**
+	 * Decreases the health of a monser if their armor is not enough to entierly block the attack
+	 */
 	public void decHealth(int health) {
-		if (currentHealth - health < 0) {
-			currentHealth = 0;
-		} else {
-			currentHealth -= health;
+		if (health > armor) {
+			if (currentHealth - health < 0) {
+				currentHealth = 0;
+			} else {
+				currentHealth -= health;
+			}
 		}
 	}
 
@@ -154,5 +162,13 @@ public abstract class Monster {
 			returnString += "\t[" + i + "] " + cards.get(i) + ":";
 		}
 		return returnString;
+	}
+
+	public void setRolledDice(HashMap<Dice, Integer> result) {
+		rolledDice = result;
+	}
+
+	public HashMap<Dice, Integer> getRolledDice() {
+		return rolledDice;
 	}
 }

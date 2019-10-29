@@ -1,16 +1,15 @@
 package card.storecard;
 
-import monster.Monster;
-
 import java.util.ArrayList;
 
 import game.Phase;
+import monster.Monster;
 
-public abstract class Effect {
+public abstract class StoreEffect {
 	protected boolean done = false;	// Used to make effects non-repeatable
 	protected ArrayList<Monster> monsters;
 
-	public Effect(ArrayList<Monster> monsters) {
+	public StoreEffect(ArrayList<Monster> monsters) {
 		this.monsters = monsters;
 	}
 

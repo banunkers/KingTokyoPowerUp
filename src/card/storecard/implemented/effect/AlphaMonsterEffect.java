@@ -2,14 +2,14 @@ package card.storecard.implemented.effect;
 
 import java.util.ArrayList;
 
-import card.storecard.Effect;
+import card.storecard.StoreEffect;
 import game.Phase;
 import monster.Monster;
 
 /**
  * Alpha Monster: Gain 1[Star] when you attack
  */
-public class AlphaMonsterEffect extends Effect {
+public class AlphaMonsterEffect extends StoreEffect {
 
 	public AlphaMonsterEffect(ArrayList<Monster> monsters) {
 		super(monsters);

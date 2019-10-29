@@ -1,4 +1,4 @@
-package card.evolutioncard.implemented.effect.kraken;
+package card.evolutioncard.implemented.effect.alienoid;
 
 import java.util.ArrayList;
 
@@ -7,17 +7,17 @@ import game.Phase;
 import monster.Monster;
 
 /**
- * Healing Rain: Temporary, Gain 2 health
+ * Alien Scourge: Temporary, Gain 2 stars
  */
-public class HealingRainEffect extends EvolEffect {
+public class AlienScourgeEffect extends EvolEffect {
 
-	public HealingRainEffect(ArrayList<Monster> monsters) {
+	public AlienScourgeEffect(ArrayList<Monster> monsters) {
 		super(monsters);
 	}
 
 	@Override
 	protected void trigger(Monster monster, Monster attacker, Phase phase) {
-		monster.incHealth(2);
+		monster.incStars(2);
 	}
 
 }

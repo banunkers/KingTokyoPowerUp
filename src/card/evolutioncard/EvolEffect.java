@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import game.Phase;
 import monster.Monster;
 
-public abstract class Effect {
+public abstract class EvolEffect {
 	protected boolean done = false;	// Used to make effects non-repeatable
 	protected ArrayList<Monster> monsters;
 
-	public Effect(ArrayList<Monster> monsters) {
+	public EvolEffect(ArrayList<Monster> monsters) {
 		this.monsters = monsters;
 	}
 
