@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import card.storecard.StoreCard;
+import monster.Monster;
 
 public class Deck {
 	public ArrayList<StoreCard> deck;
 	public StoreCard[] store = new StoreCard[3];
 
-	public Deck() {
-		CardFactory cardFactory = new CardFactory();
+	public Deck(ArrayList<Monster> monsters) {
+		CardFactory cardFactory = new CardFactory(monsters);
 		deck = cardFactory.getStoreCards();
 		Collections.shuffle(deck);
 		

@@ -1,6 +1,8 @@
 package card.storecard.implemented.effect;
 
-import card.Effect;
+import java.util.ArrayList;
+
+import card.storecard.Effect;
 import game.Phase;
 import monster.Monster;
 
@@ -8,6 +10,10 @@ import monster.Monster;
  * Armor Plating: Keep, Ignore damage of 1
  */
 public class ArmorPlatingEffect extends Effect {
+
+	public ArmorPlatingEffect(ArrayList<Monster> monsters) {
+		super(monsters);
+	}
 
 	@Override
 	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {

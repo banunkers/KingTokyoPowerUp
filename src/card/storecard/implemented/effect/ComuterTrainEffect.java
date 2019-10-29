@@ -1,13 +1,19 @@
 package card.storecard.implemented.effect;
 
-import card.Effect;
+import java.util.ArrayList;
+
+import card.storecard.Effect;
 import game.Phase;
 import monster.Monster;
 
 /**
- * Comuter Train: Discard,  + 2[Star]
+ * Comuter Train: Discard, + 2[Star]
  */
 public class ComuterTrainEffect extends Effect {
+
+	public ComuterTrainEffect(ArrayList<Monster> monsters) {
+		super(monsters);
+	}
 
 	@Override
 	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {

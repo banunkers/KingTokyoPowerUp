@@ -11,6 +11,11 @@ import monster.Monster;
  * Creates all of the implemented store cards
  */
 public class CardFactory {
+	private ArrayList<Monster> monsters;
+
+	public CardFactory(ArrayList<Monster> monsters) {
+		this.monsters = monsters;
+	}
 
 	/**
 	 * Creates an array list containing all of the currently implemented store cards
@@ -18,13 +23,13 @@ public class CardFactory {
 	 */
 	public ArrayList<StoreCard> getStoreCards() {
 		ArrayList<StoreCard> cards = new ArrayList<StoreCard>();
-		cards.add(new AcidAttack());
-		cards.add(new AlienMetabolism());
-		cards.add(new AlphaMonster());
-		cards.add(new ApartmentBuilding());
-		cards.add(new ArmorPlating());
-		cards.add(new ComuterTrain());
-		cards.add(new CornerStore());
+		cards.add(new AcidAttack(monsters));
+		cards.add(new AlienMetabolism(monsters));
+		cards.add(new AlphaMonster(monsters));
+		cards.add(new ApartmentBuilding(monsters));
+		cards.add(new ArmorPlating(monsters));
+		cards.add(new ComuterTrain(monsters));
+		cards.add(new CornerStore(monsters));
 		return cards;
 	}
 

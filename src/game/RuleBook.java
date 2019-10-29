@@ -21,14 +21,12 @@ public class RuleBook {
 	private static final int VICTORY_STARS = 20;
 
 	private Util diceUtil = new Util();
+	private ArrayList<Monster> monsters;
 	private ArrayList<Player> players;
-	private ArrayList<Monster> monsters = new ArrayList<Monster>();
 
-	public RuleBook(ArrayList<Player> players) {
+	public RuleBook(ArrayList<Player> players, ArrayList<Monster> monsters) {
+		this.monsters = monsters;
 		this.players = players;
-		for (Player player : players) {
-			monsters.add(player.getMonster());
-		}
 	}
 
 	/**

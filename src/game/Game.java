@@ -20,10 +20,14 @@ public class Game {
 
 	public Game(ArrayList<Player> players) {
 		this.players = players;
+		ArrayList<Monster> monsters = new ArrayList<Monster>();
+		for (Player player : players) {
+			monsters.add(player.getMonster());
+		}
 		// Shuffle the starting order
 		Collections.shuffle(players);
 		this.ruleBook = new RuleBook(players);
-		Deck deck = new Deck();
+		Deck deck = new Deck(monsters);
 		GamePhase gamePhase = new GamePhase();
 		
 		// Game loop

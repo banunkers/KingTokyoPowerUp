@@ -1,6 +1,8 @@
 package card.storecard.implemented.effect;
 
-import card.Effect;
+import java.util.ArrayList;
+
+import card.storecard.Effect;
 import game.Phase;
 import monster.Monster;
 
@@ -10,13 +12,15 @@ import monster.Monster;
  */
 public class AcidAttackEffect extends Effect {
 
+	public AcidAttackEffect(ArrayList<Monster> monsters) {
+		super(monsters);
+	}
+
 	@Override
 	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
-		if (!done) {
-			if (phase == Phase.ATTACKING) {
-				trigger(monster, null);
-				done = true;
-			}
+		if (phase == Phase.ATTACKING) {
+			trigger(monster, null);
+			done = true;
 		}
 	}
 

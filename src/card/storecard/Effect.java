@@ -1,10 +1,18 @@
-package card;
+package card.storecard;
 
 import monster.Monster;
+
+import java.util.ArrayList;
+
 import game.Phase;
 
 public abstract class Effect {
 	protected boolean done = false;	// Used to make effects non-repeatable
+	protected ArrayList<Monster> monsters;
+
+	public Effect(ArrayList<Monster> monsters) {
+		this.monsters = monsters;
+	}
 
 	/**
 	 * Checks if the effect should be triggered in the current phase of the game

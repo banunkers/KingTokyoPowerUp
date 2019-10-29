@@ -1,6 +1,6 @@
 package card.storecard;
 
-import card.Effect;
+import card.storecard.Effect;
 
 public abstract class StoreCard {
 	private String name;

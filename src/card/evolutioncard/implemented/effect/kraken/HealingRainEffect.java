@@ -1,22 +1,17 @@
 package card.evolutioncard.implemented.effect.kraken;
 
-import card.Effect;
+import card.evolutioncard.Effect;
 import game.Phase;
 import monster.Monster;
 
+/**
+ * Healing Rain: Temporary, Gain 2 health
+ */
 public class HealingRainEffect extends Effect {
 
 	@Override
-	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
-		if (phase == Phase.PLAYING_CARD) {
-			
-		}
-	}
-
-	@Override
-	protected void trigger(Monster monster, Monster attacker) {
-		// TODO Auto-generated method stub
-
+	protected void trigger(Monster monster, Monster attacker, Phase phase) {
+		monster.incHealth(2);
 	}
 
 }

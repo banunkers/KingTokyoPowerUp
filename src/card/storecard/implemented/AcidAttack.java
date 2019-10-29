@@ -1,11 +1,14 @@
 package card.storecard.implemented;
 
+import java.util.ArrayList;
+
 import card.storecard.StoreCard;
 import card.storecard.implemented.effect.AcidAttackEffect;
+import monster.Monster;
 
 public class AcidAttack extends StoreCard {
 
-	public AcidAttack() {
-		super("Acid Attack", 6, false, new AcidAttackEffect(), "Deal 1 extra damage each turn");
+	public AcidAttack(ArrayList<Monster> monsters) {
+		super("Acid Attack", 6, false, new AcidAttackEffect(monsters), "Deal 1 extra damage each turn (even when you don't otherwise attack)");
 	}
 }
