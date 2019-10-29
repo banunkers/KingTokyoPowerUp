@@ -11,7 +11,7 @@ import monster.Monster;
 public class AlienScourge extends EvolCard {
 
 	public AlienScourge(ArrayList<Monster> monsters) {
-		super("Alien Scourge", true, new AlienScourgeEffect(monsters), "Gain 2 ENERGY and 1 HEART.");
+		super("Alien Scourge", true, new AlienScourgeEffect(monsters), "Gain 2 STARS.");
 	}
 
 }

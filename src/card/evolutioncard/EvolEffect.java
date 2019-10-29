@@ -14,10 +14,11 @@ public abstract class EvolEffect {
 	}
 
 	/**
-	 * Triggers and applies the effect of the card
-	 * @param monster the monster whos card is being triggered
-	 * @param attacker optional parameter of attacking monster
+	 * Checks if the evolution card should trigger when the game phase changes.
+	 * If the conditions are met the effect will trigger
+	 * @param monster the monster whos card is being checked
+	 * @param currMonster the monster who might have triggered the card
 	 * @param phase the current game phase
 	 */
-	protected abstract void trigger(Monster monster, Monster attacker, Phase phase);
+	public abstract void trigger(Monster monster, Monster currMonster, Phase phase);
 }

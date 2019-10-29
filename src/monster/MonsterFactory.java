@@ -32,10 +32,11 @@ public class MonsterFactory {
 
 		return monsters;
 	}
+	
 	/**
-	 * Creates an instance of all the implemented monsters
+	 * Creates all of the implemented monsters
 	 * 
-	 * @return an array list containing all the monsterss
+	 * @return an array list containing all the monsters
 	 */
 	private ArrayList<Monster> createMonsters() {
 		ArrayList<Monster> allMonsters = new ArrayList<Monster>();

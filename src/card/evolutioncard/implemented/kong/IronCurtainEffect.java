@@ -16,9 +16,9 @@ public class IronCurtainEffect extends EvolEffect {
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker, Phase phase) {
-		if (phase == Phase.YIELDING_TOKYO && monster.getName() != "Kong" ) {
-			monster.decHealth(1);
+	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+		if (phase == Phase.YIELDING_TOKYO && !currMonster.equals(monster)) {
+			currMonster.decHealth(1);
 		}
 	}
 

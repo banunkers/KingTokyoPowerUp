@@ -16,7 +16,7 @@ public class RedDawnEffect extends EvolEffect {
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker, Phase phase) {
+	public void trigger(Monster monster, Monster currMonster, Phase phase) {
 		for (Monster mon : monsters) {
 			if (!mon.equals(monster))
 				mon.decHealth(2);

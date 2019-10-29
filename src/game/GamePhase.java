@@ -1,13 +1,19 @@
 package game;
 
 import card.storecard.StoreCard;
+
+import java.util.ArrayList;
+
+import card.evolutioncard.EvolCard;
 import monster.Monster;
 
 public class GamePhase {
 	private Phase currPhase;
+	private ArrayList<Monster> monsters;
 
-	public GamePhase() {
+	public GamePhase(ArrayList<Monster> monsters) {
 		currPhase = Phase.START;
+		this.monsters = monsters;
 	}
 
 	public Phase getPhase() {
@@ -22,8 +28,15 @@ public class GamePhase {
 	 */
 	public void setPhase(Phase phase, Monster monster, Monster attacker) {
 		currPhase = phase;
-		for (StoreCard card : monster.getCards()) {
+		for (StoreCard card : monster.getStoreCards()) {
 			card.getEffect().checkTrigger(monster, currPhase, attacker);
+		}
+
+		// Go through all the active permanent evolution cards and check if they should trigger
+		for (Monster monWithEvo : monsters) {
+			for (EvolCard card : monWithEvo.getActiveEvolCards()) {
+				card.getEffect().trigger(monWithEvo, monster, currPhase);
+			}
 		}
 	}
 }

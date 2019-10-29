@@ -16,7 +16,7 @@ public class AlienScourgeEffect extends EvolEffect {
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker, Phase phase) {
+	public void trigger(Monster monster, Monster curMonster, Phase phase) {
 		monster.incStars(2);
 	}
 

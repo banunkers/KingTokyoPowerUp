@@ -17,16 +17,17 @@ public class EaterOfSoulsEffect extends EvolEffect {
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker, Phase phase) {
-		if (!done) {
-			monster.setMaxHealth(12);
-			done = true;
-		}
+	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+		if (monster.equals(currMonster)) { // If its krakens turn
+			if (!done) {
+				monster.setMaxHealth(12);
+				done = true;
+			}
 
-		if (phase == Phase.TAKING_TOKYO) {
-			monster.incHealth(1);
+			if (phase == Phase.TAKING_TOKYO) {
+				monster.incHealth(1);
+			}
 		}
-
 	}
 
 }

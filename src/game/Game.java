@@ -20,15 +20,17 @@ public class Game {
 
 	public Game(ArrayList<Player> players) {
 		this.players = players;
+		// Shuffle the starting order
+		Collections.shuffle(players);
+
 		ArrayList<Monster> monsters = new ArrayList<Monster>();
 		for (Player player : players) {
 			monsters.add(player.getMonster());
 		}
-		// Shuffle the starting order
-		Collections.shuffle(players);
+		
 		this.ruleBook = new RuleBook(players, monsters);
 		Deck deck = new Deck(monsters);
-		GamePhase gamePhase = new GamePhase();
+		GamePhase gamePhase = new GamePhase(monsters);
 		
 		// Game loop
 		while (true) {
@@ -38,7 +40,7 @@ public class Game {
 				
 				// Skip if the monster is already dead
 				if (!currMon.isAlive()) {
-					currMon.setInTokyo(false);
+					currMon.setInTokyo(gamePhase, false);
 					continue;
 				}
 
@@ -65,9 +67,9 @@ public class Game {
 				Server.sendMessage(currPlayer, "ROLLED:You rolled " + result + " Press [ENTER]\n");
 
 				// Resolve the dice
-				ruleBook.resolveDice(currPlayerID, result, gamePhase);
 				currMon.setRolledDice(result);
 				gamePhase.setPhase(Phase.RESOLVING, currMon, null);
+				ruleBook.resolveDice(currPlayerID, result, gamePhase);
 
 				// Decide to buy things for energy
 				gamePhase.setPhase(Phase.BUYING, currMon, null);

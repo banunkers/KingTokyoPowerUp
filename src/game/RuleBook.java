@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import card.Deck;
+import card.evolutioncard.EvolCard;
 import dice.Dice;
 import dice.Util;
 import monster.Monster;
@@ -67,33 +68,14 @@ public class RuleBook {
 			}
 			// 6b. 3 hearts = power-up
 			if (result.get(HEART).intValue() >= 3) {
-				// Deal a power-up card to the currMon
-				if (currMon.getName().equals("Kong")) {
-					// Todo: Add support for more cards.
-					// Current support is only for the Red Dawn card
-					// Add support for keeping it secret until played
-					Server.sendMessage(currPlayer, "POWERUP: Deal 2 damage to all others\n");
-					for (int mon = 0; mon < monsters.size(); mon++) {
-						// TODO: try equals here
-						if (monsters.get(mon) != currMon) {
-							monsters.get(mon).decHealth(2);
-						}
+				EvolCard activatedEvol = currMon.activateEvolCard();
+				if (activatedEvol != null) {
+					Server.sendMessage(currPlayer, "POWERUP:" + activatedEvol.toString() + "\n");
+					if (activatedEvol.isTemporary()) { // Trigger the effect if its a temporary evolution card
+						activatedEvol.getEffect().trigger(currMon, null, gamePhase.getPhase());
+					} else {
+						currMon.addActiveEvolCard(activatedEvol); // Store the evolution card if its permanent
 					}
-				}
-				if (currMon.getName().equals("Gigazaur")) {
-					// Todo: Add support for more cards.
-					// Current support is only for the Radioactive Waste
-					// Add support for keeping it secret until played
-					Server.sendMessage(currPlayer, "POWERUP: Receive 2 energy and 1 health\n");
-					currMon.incEnergy(2);
-					currMon.incHealth(1);
-				}
-				if (currMon.getName().equals("Alienoid")) {
-					// Todo: Add support for more cards.
-					// Current support is only for the Alien Scourge
-					// Add support for keeping it secret until played
-					Server.sendMessage(currPlayer, "POWERUP: Receive 2 stars\n");
-					currMon.incStars(2);
 				}
 			}
 		}
@@ -112,7 +94,7 @@ public class RuleBook {
 			currMon.setTotalDamage(result.get(CLAW).intValue());
 			if (currMon.isInTokyo()) {
 				for (int mon = 0; mon < monsters.size(); mon++) {
-					if (monsters.get(mon) != currMon) {
+					if (monsters.get(mon).equals(currMon)) {
 						gamePhase.setPhase(Phase.TAKING_DAMAGE, monsters.get(mon), currMon); // Trigger defensive effects of attacked monster
 						monsters.get(mon).decHealth(currMon.getTotalDamage());
 					}
@@ -129,15 +111,13 @@ public class RuleBook {
 						String answer = Server.sendMessage(players.get(mon), "ATTACKED: You have " + monsters.get(mon).getHealth()
 								+ " health left. Do you wish to leave Tokyo? [YES/NO]\n");
 						if (answer.equalsIgnoreCase("YES")) {
-							gamePhase.setPhase(Phase.YIELDING_TOKYO, monsters.get(mon), null);
-							monsters.get(mon).setInTokyo(false);
+							monsters.get(mon).setInTokyo(gamePhase, false);
 							monsterInTokyo = false;
 						}
 					}
 				}
 				if (!monsterInTokyo) {
-					gamePhase.setPhase(Phase.TAKING_TOKYO, currMon, null);
-					currMon.setInTokyo(true);
+					currMon.setInTokyo(gamePhase, true);
 					currMon.incStars(1);
 				}
 			}
@@ -158,7 +138,7 @@ public class RuleBook {
 			if (deck.store[buy].isDiscard()) {
 				gamePhase.setPhase(Phase.DISCARDING, monster, null);
 			} else {
-				monster.addCard(deck.store[buy]);
+				monster.addStoreCard(deck.store[buy]);
 			}
 			// Deduct the cost of the card from energy
 			monster.decEnergy(deck.store[buy].getCost() - monster.getCostReduction());

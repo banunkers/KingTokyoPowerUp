@@ -27,7 +27,7 @@ public abstract class EvolCard implements Card<EvolEffect> {
 	 * Returns the type of the evolution card. There are two types of cards, temporary and permanent.
 	 * @return if the card is temporary or not
 	 */
-	public boolean isTeporary() {
+	public boolean isTemporary() {
 		return temporary;
 	}
 

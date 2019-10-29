@@ -17,12 +17,16 @@ public class FunnyLookingButDangerousEffect extends EvolEffect {
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker, Phase phase) {
-		if (phase == Phase.RESOLVING) {
-			if (monster.getRolledDice().get(new Dice(2)).intValue() >= 3)
-			for (Monster mon : monsters) {
-				if (!mon.equals(monster))
-					mon.decHealth(1);
+	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+		if (phase == Phase.RESOLVING && monster.equals(currMonster)) {
+			if (monster.getRolledDice().containsKey(new Dice(2))) {
+				int numTWO = monster.getRolledDice().get(new Dice(2)).intValue();
+				if (numTWO >= 3) {
+					for (Monster mon : monsters) {
+						if (!mon.equals(monster))
+							mon.decHealth(1);
+					}
+				}
 			}
 		}
 

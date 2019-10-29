@@ -16,10 +16,12 @@ public class DefenderOfTokyoEffect extends EvolEffect {
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker, Phase phase) {
-		if (phase == Phase.ROLLING && monster.isInTokyo()) {
-			for (Monster mon : monsters) {
-				mon.decStars(1);
+	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+		if (phase == Phase.ROLLING && monster.equals(currMonster)) {
+			if (monster.isInTokyo()) {
+				for (Monster mon : monsters) {
+					mon.decStars(1);
+				}
 			}
 		}
 	}

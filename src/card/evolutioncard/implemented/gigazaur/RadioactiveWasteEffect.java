@@ -16,7 +16,7 @@ public class RadioactiveWasteEffect extends EvolEffect {
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker, Phase phase) {
+	public void trigger(Monster monster, Monster currMonster, Phase phase) {
 		monster.incEnergy(2);
 		monster.incHealth(1);
 	}
