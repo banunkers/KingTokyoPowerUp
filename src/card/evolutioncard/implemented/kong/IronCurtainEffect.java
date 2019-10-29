@@ -1,4 +1,4 @@
-package card.evolutioncard.implemented.effect.kong;
+package card.evolutioncard.implemented.kong;
 
 import java.util.ArrayList;
 

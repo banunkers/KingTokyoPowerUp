@@ -1,4 +1,4 @@
-package card.evolutioncard.implemented.effect.alienoid;
+package card.evolutioncard.implemented.alienoid;
 
 import java.util.ArrayList;
 

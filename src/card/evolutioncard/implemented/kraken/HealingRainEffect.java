@@ -1,4 +1,4 @@
-package card.evolutioncard.implemented.effect.kraken;
+package card.evolutioncard.implemented.kraken;
 
 import java.util.ArrayList;
 

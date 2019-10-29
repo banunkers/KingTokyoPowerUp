@@ -5,7 +5,5 @@ public interface Card<T> {
 
 	public String toString();
 
-	public int getCost();
-
 	public String getName();
 }

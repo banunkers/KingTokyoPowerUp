@@ -1,4 +1,4 @@
-package card.evolutioncard.implemented.effect.kraken;
+package card.evolutioncard.implemented.kraken;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import game.Phase;
 import monster.Monster;
 
 /**
- * Healing Rain: Permanent, Gain 1 HEART each time you take control of Tokyo.
+ * Eater of Souls: Permanent, Gain 1 HEART each time you take control of Tokyo.
  * You can have up to 12 HEART as long as you own this card.
  */
 public class EaterOfSoulsEffect extends EvolEffect {

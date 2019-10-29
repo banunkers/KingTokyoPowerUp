@@ -1,4 +1,4 @@
-package card.evolutioncard.implemented.effect.gigazaur;
+package card.evolutioncard.implemented.gigazaur;
 
 import java.util.ArrayList;
 
