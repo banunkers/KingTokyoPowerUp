@@ -1,3 +1,5 @@
+package client;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -6,11 +8,11 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class KingTokyoPowerUpClient {
+public class Client {
 
 	private Scanner sc = new Scanner(System.in);
 
-	public KingTokyoPowerUpClient(boolean bot) {
+	public Client(boolean bot) {
 		String name = "";
 		Random rnd = ThreadLocalRandom.current();
 		// Server stuffs
@@ -49,6 +51,8 @@ public class KingTokyoPowerUpClient {
 						outToServer.writeBytes("-1\n");
 					else
 						outToServer.writeBytes(sc.nextLine() + "\n");
+				} else if (message[0].equalsIgnoreCase("UPDATE")) {
+					System.out.println(sc.nextLine() + "\n");
 				} else {
 					if (bot)
 						outToServer.writeBytes("OK\n");
@@ -65,10 +69,10 @@ public class KingTokyoPowerUpClient {
 	}
 
 	public static void main(String argv[]) {
-		KingTokyoPowerUpClient client;
+		Client client;
 		if (argv.length != 0) // Syntax: java KingTokyoPowerUpClient bot
-			client = new KingTokyoPowerUpClient(true);
+			client = new Client(true);
 		else
-			client = new KingTokyoPowerUpClient(false);
+			client = new Client(false);
 	}
 }

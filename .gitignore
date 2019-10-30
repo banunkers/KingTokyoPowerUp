@@ -25,5 +25,5 @@ hs_err_pid*
 .vscode
 .settings
 .project
-.classpath
 eclipse-formatter.xml
+.classpath
