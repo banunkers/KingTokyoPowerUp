@@ -39,10 +39,14 @@ public class Game {
 				Monster currMon = currPlayer.getMonster();
 
 				// Check if monster is alive and reward with star if inside Tokyo
+				// skip if already dead
 				gamePhase.setPhase(Phase.START, currMon, null);
-				ruleBook.startingPhase(currMon, gamePhase);
+				boolean isAlive = ruleBook.startingPhase(currMon, gamePhase);
+				if (!isAlive) {
+					continue;
+				}
 				
-				// DIsplay the sate of the game
+				// Display the sate of the game
 				statusUpdate(currPlayer);
 
 				// Begin the roll phase which involves two chances to reroll
@@ -71,10 +75,11 @@ public class Game {
 					+ currMon.getEnergy() + " energy) [#/-1]:" + deck + "\n";
 				String answer = Server.sendMessage(currPlayer, msg);
 				int buy = Integer.parseInt(answer);
-				if (buy >= 0)	// -1 to not do anything 
+				if (buy >= 0) {	// -1 to not do anything 
 					ruleBook.buy(currMon, buy, deck, gamePhase);
+				}
 
-				// 8. Check victory conditions
+				// Check victory conditions and exit if someone won
 				if (ruleBook.gameEnded()) {
 					System.exit(0);
 				}
@@ -82,6 +87,10 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Informs the player of the state of the game
+	 * @param player the player to inform
+	 */
 	private void statusUpdate(Player player) {
 		String status_update = "You are " + player.getMonster().getName() + " and it is your turn. Here are the stats";
 		for (int count = 0; count < players.size(); count++) {

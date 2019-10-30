@@ -187,8 +187,69 @@ public class GameLogicTests {
 	}
 
 	@Test
+	// ID[14]: Store card Keep or Discard
+	public void storeCard() throws Exception {
+		ArrayList<Monster> monsters = new ArrayList<Monster>();
+		monsters.add(new Kong());
+
+		ArrayList<Player> players = new ArrayList<Player>();
+		for (Monster monster : monsters) {
+			players.add(new Player(monster));
+		}
+
+		Monster mon = monsters.get(0);
+		RuleBook ruleBook = new RuleBook(players, monsters);
+		Deck deck = new Deck(monsters);
+		GamePhase gamePhase = new GamePhase(monsters);
+
+		try {
+			Method buy = RuleBook.class.getDeclaredMethod("buy", Monster.class, int.class, Deck.class, GamePhase.class);
+			buy.setAccessible(true);
+
+			// Buy a card with sufficient energy
+			mon.incEnergy(100);
+			boolean boughtDiscard = false;
+			
+			// Loop until DISCARD card is bought
+			while(!boughtDiscard) {
+				for (int i = 0; i < deck.getStore().size(); i++) {
+					if (deck.getStore().get(i).isDiscard()) {
+						boughtDiscard = true;
+						boolean bought = (boolean) buy.invoke(ruleBook, mon, i, deck, gamePhase);
+						assertEquals("Player bought the discard card", true, bought);
+						break;
+					}
+				}
+				deck.resetStore();
+			}
+			// Check that the discard card doesn't stay on hand
+			assertEquals("Bought DISCARD card was discarded", 0, mon.getStoreCards().size());
+
+			mon.incEnergy(100);
+			// Loop until KEEP card is bought
+			boolean boughtKeep = false;
+			while(!boughtKeep) {
+				for (int i = 0; i < deck.getStore().size(); i++) {
+					if (!deck.getStore().get(i).isDiscard()) {
+						boughtKeep = true;
+						boolean bought = (boolean) buy.invoke(ruleBook, mon, i, deck, gamePhase);
+						assertEquals("Player bought the keep card", true, bought);
+						break;
+					}
+				}
+				deck.resetStore();
+			}
+			
+			// Check that KEEP card is still in hand
+			assertEquals("Bout KEEP card still on hand", 1, mon.getStoreCards().size());
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Test
 	// ID[16]: First monster to get 20 stars wins the game
-	public void starVictory() {
+	public void starVictory() throws Exception {
 		ArrayList<Monster> monsters = new ArrayList<Monster>();
 		monsters.add(new Kong());
 		monsters.add(new Alienoid());
@@ -203,14 +264,81 @@ public class GameLogicTests {
 		Monster mon = monsters.get(0);
 		RuleBook ruleBook = new RuleBook(players, monsters);
 
-		// All monsters 0 stars and full health => no winner
-		boolean gameOver = ruleBook.gameEnded();
-		assertEquals("Game not over", false, gameOver);
+		try {
+			Method victoryByStars = RuleBook.class.getDeclaredMethod("victoryByStars");
+			victoryByStars.setAccessible(true);
+			
+			// All monsters 0 stars and full health => no winner
+			boolean hasWinner  = victoryByStars.invoke(ruleBook) == null ? false : true;
+			assertEquals("Game not over", false, hasWinner);
 
-		mon.incStars(20);
-		gameOver = ruleBook.gameEnded();
-		assertEquals("Victory by stars", true, gameOver);
+			// Monster with 20 stars
+			mon.incStars(20);
+			Player winner = (Player) victoryByStars.invoke(ruleBook);
+			assertEquals("Victory by stars", mon, winner.getMonster());	
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
+	@Test
+	// ID[17]: The sole surviving monster wins the game
+	public void survivingVictory() throws Exception {
+		ArrayList<Monster> monsters = new ArrayList<Monster>();
+		monsters.add(new Kong());
+		monsters.add(new Alienoid());
+		monsters.add(new Gigazaur());
+		monsters.add(new Kraken());
+
+		ArrayList<Player> players = new ArrayList<Player>();
+		for (Monster monster : monsters) {
+			players.add(new Player(monster));
+		}
+
+		Monster mon = monsters.get(0);
+		RuleBook ruleBook = new RuleBook(players, monsters);
+
+		try {
+			Method victoryBySurv = RuleBook.class.getDeclaredMethod("victoryBySurviving");
+			victoryBySurv.setAccessible(true);
+			
+			// All monsters 0 stars and full health => no winner
+			boolean hasWinner  = victoryBySurv.invoke(ruleBook) == null ? false : true;
+			assertEquals("Game not over when all full health", false, hasWinner);
+
+			// All monsters 0 health except one
+			for (Monster monster : monsters) {
+				monster.setHealth(0);
+			}
+			mon.setHealth(10);
+			Player winner = (Player) victoryBySurv.invoke(ruleBook);
+			assertEquals("Victory by surviving", mon, winner.getMonster());	
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Test
+	// ID[18]: A monster that reaches 0 health is out of the game
+	public void outOfGame() {
+		ArrayList<Monster> monsters = new ArrayList<Monster>();
+		monsters.add(new Kong());
+
+		ArrayList<Player> players = new ArrayList<Player>();
+		for (Monster monster : monsters) {
+			players.add(new Player(monster));
+		}
+
+		Monster mon = monsters.get(0);
+		RuleBook ruleBook = new RuleBook(players, monsters);
+		GamePhase gamePhase = new GamePhase(monsters);
+
+		// Monster with non-zero health is still considered alive
+		assertEquals("Monster with non-zero health still alive", true, ruleBook.startingPhase(mon, gamePhase));
+
+		// Monster with zero health is considered dead and thus will be skipped during game loop
+		mon.setHealth(0);
+		assertEquals("Monster with zero health considered dead", false, ruleBook.startingPhase(mon, gamePhase));
 	}
 
 	public void checkHeart() throws Exception {

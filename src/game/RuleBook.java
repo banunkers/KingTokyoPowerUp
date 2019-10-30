@@ -244,30 +244,35 @@ public class RuleBook {
 		return false;
 	}
 
+	/**
+	 * Determines if a player has won by aquiring the needed stars for a victory
+	 * @return the player, if any, who won the game
+	 */
 	private Player victoryByStars() {
 		for (int player = 0; player < players.size(); player++) {
 			Monster mon = players.get(player).getMonster();
 			if (mon.getStars() >= VICTORY_STARS) {
-				for (int i = 0; i < players.size(); i++) {
-					Server.sendMessage(players.get(i), "Victory: " + mon.getName() + " has won by stars\n");
-				}
 				return players.get(player);
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * Determines if a player has won by being the sole survivor
+	 * @return the player, if any, who survived
+	 */
 	private Player victoryBySurviving() {
 		int alive = 0;
-		int alivePlayer;
+		Player alivePlayer = null;
 		for (int player = 0; player < players.size(); player++) {
 			Monster mon = players.get(player).getMonster();
 			if (mon.isAlive()) {
 				alive++;
-				alivePlayer = player;
+				alivePlayer = players.get(player);
 			}
 		}
-		if (alive == 1 && alivePlayer != null) {
+		if (alive == 1) {
 			return alivePlayer;
 		}
 		return null;
