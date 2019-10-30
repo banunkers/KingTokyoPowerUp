@@ -193,6 +193,14 @@ public abstract class Monster {
 	}
 
 	/**
+	 * Sets the monsters stars
+	 * @param stars amount of stars to set to
+	 */
+	public void setStars(int stars) {
+		this.stars = stars;
+	}
+
+	/**
 	 * Increases the monsters total stars
 	 * @param stars amount to increase with
 	 */
@@ -265,6 +273,14 @@ public abstract class Monster {
 	 */
 	public int getHealth() {
 		return currentHealth;
+	}
+
+	/**
+	 * Sets the monsters current health
+	 * @param health the health to set it to1
+	 */
+	public void setHealth(int health) {
+		this.currentHealth = health;
 	}
 
 	/**

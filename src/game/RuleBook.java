@@ -34,7 +34,7 @@ public class RuleBook {
 	/**
 	 * Handles the start of a players round.
 	 * Checks if they are still alive and if they are inside tokyo they will be rewared
-	 * @param monster the monster whos turn it is
+	 * @param monster the monster whose turn it is
 	 * @return if the monster is still alive
 	 */
 	public boolean startingPhase(Monster monster, GamePhase gamePhase) {
@@ -51,7 +51,7 @@ public class RuleBook {
 	/**
 	 * Handles the rolling phase of the game for each player.
 	 * Lets the player choose if they want to reroll
-	 * @param player the player whos turn it is
+	 * @param player the player whose turn it is
 	 * @param dice the six rolled dice
 	 * @return	an array list containing the rerolled dice
 	 */
@@ -73,12 +73,51 @@ public class RuleBook {
 
 	/**
 	 * Resolves the result of the dice rolled by a player and applies it to the monsters
-	 * @param currPlayer the player whos dice is getting resolved
+	 * @param currPlayer the player whose dice is getting resolved
 	 * @param result the rolled dice
 	 */
 	public void resolveDice(Player currPlayer, HashMap<Dice, Integer> result, GamePhase gamePhase) {
 		Monster currMon = currPlayer.getMonster();
 		
+		// Resolve any hearts rolled and make the player aware if an evolution card was acivated
+		// by rolling at least 3 HEARTS
+		EvolCard activatedEvol = resolveHearts(currMon, result);
+		if (activatedEvol != null) {
+			Server.sendMessage(currPlayer, "POWERUP:" + activatedEvol.toString() + "\n");
+		}
+
+		// 3 or more of a number = victory points
+		resolveNums(currMon, result);
+
+		// Check for claws. If the monster attacks a monster in Tokyo ask if they want to yield Tokyo
+		if (result.containsKey(CLAW)) {
+			Player attackedInTokyo = resolveClaw(currMon, result, gamePhase);
+			if (attackedInTokyo != null) {
+				// Promt the attacked user if they want to yield Tokyo to the attacker
+				String answer = Server.sendMessage(attackedInTokyo, "ATTACKED: You have " + attackedInTokyo.getMonster().getHealth()
+						+ " health left. Do you wish to leave Tokyo? [YES/NO]\n");
+				if (answer.equalsIgnoreCase("YES")) {
+					attackedInTokyo.getMonster().setInTokyo(gamePhase, false);
+					currMon.setInTokyo(gamePhase, true);
+					currMon.incStars(1);
+				}
+			}
+		} else {
+			// Trigger cards which do not require any rolled CLAWS to still take effect i.e. AcidAttack
+			gamePhase.setPhase(Phase.ATTACKING_NO_CLAW, currMon, null);	
+		}
+		
+		// Check for energy dice
+		resolveEnergy(currMon, result);
+	}
+
+	/**
+	 * Checks the players dice of any rolled hearts and applies the effects of them
+	 * @param currMon the monster of the player who rolled the dice
+	 * @param result the rolled dice
+	 * @return the activated evolution card from rolling 3 HEARTS, if any
+	 */
+	private EvolCard resolveHearts(Monster currMon, HashMap<Dice, Integer> result) {
 		if (result.containsKey(HEART)) { 
 			if (!currMon.isInTokyo()) {	
 				// +1 currentHealth per heart, up to max health
@@ -86,13 +125,19 @@ public class RuleBook {
 			}
 			// 3 hearts = power-up
 			if (result.get(HEART).intValue() >= 3) {
-				EvolCard activatedEvol = currMon.activateEvolCard();
-				if (activatedEvol != null) {	// Make the player aware that an evolution card was activated
-					Server.sendMessage(currPlayer, "POWERUP:" + activatedEvol.toString() + "\n");
-				}
+				return currMon.activateEvolCard();
 			}
+			return null;
 		}
-		// 3 or more of a number = victory points
+		return null;
+	}
+
+	/**
+	 * Resolves all of the number dice the player rolled
+	 * @param currMon the players monster
+	 * @param result the rolled dice
+	 */
+	private void resolveNums(Monster currMon, HashMap<Dice, Integer> result) {
 		for (int num = 1; num < 4; num++) {
 			if (result.containsKey(new Dice(num))) {
 				int numDice = result.get(new Dice(num)).intValue();
@@ -101,59 +146,66 @@ public class RuleBook {
 				}
 			}
 		}	
-		// claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
-		if (result.containsKey(CLAW)) {
-			gamePhase.setPhase(Phase.ATTACKING, currMon, null);	// Trigger any attacking effects
-			currMon.setTotalDamage(result.get(CLAW).intValue());
-			if (currMon.isInTokyo()) {
-				for (int mon = 0; mon < monsters.size(); mon++) {
-					if (monsters.get(mon).equals(currMon)) {
-						gamePhase.setPhase(Phase.TAKING_DAMAGE, monsters.get(mon), currMon); // Trigger defensive effects of attacked monster
-						monsters.get(mon).decHealth(currMon.getTotalDamage());
-					}
-				}
-			} else {
-				boolean monsterInTokyo = false;
-				for (int mon = 0; mon < monsters.size(); mon++) {
-					if (monsters.get(mon).isInTokyo()) {
-						monsterInTokyo = true;
-						gamePhase.setPhase(Phase.TAKING_DAMAGE, monsters.get(mon), currMon);
-						monsters.get(mon).decHealth(currMon.getTotalDamage());
+	}
 
-						// Promt the attacked user if they want to yield Tokyo to the attacker
-						String answer = Server.sendMessage(players.get(mon), "ATTACKED: You have " + monsters.get(mon).getHealth()
-								+ " health left. Do you wish to leave Tokyo? [YES/NO]\n");
-						if (answer.equalsIgnoreCase("YES")) {
-							monsters.get(mon).setInTokyo(gamePhase, false);
-							monsterInTokyo = false;
-						}
-					}
-				}
-				if (!monsterInTokyo) {
-					currMon.setInTokyo(gamePhase, true);
-					currMon.incStars(1);
-				}
-			}
-		} else {
-			// Trigger cards which do not require any rolled CLAWS to still take effect i.e. AcidAttack
-			gamePhase.setPhase(Phase.ATTACKING_NO_CLAW, currMon, null);
-		}
-		
-		// 6f. energy = energy tokens
+	/**
+	 * Resolves all of the energy dice the player rolled
+	 * @param currMon the players monster
+	 * @param result the rolled dice
+	 */
+	private void resolveEnergy(Monster currMon, HashMap<Dice, Integer> result) {
 		if (result.containsKey(ENERGY))
 			currMon.incEnergy(result.get(ENERGY).intValue());
 	}
 
-	public void buy(Player player, Deck deck, GamePhase gamePhase) {
-		Monster monster = player.getMonster();
+	/**
+	 * Resolves any claw dice rolled by the player
+	 * @param currMon the players monster
+	 * @param result the rolled dice
+	 * @param gamePhase the game phase
+	 * @return the player, if any, in Tokyo who got attacked by the monster
+	 */
+	private Player resolveClaw(Monster currMon, HashMap<Dice, Integer> result, GamePhase gamePhase) {
+		gamePhase.setPhase(Phase.ATTACKING, currMon, null);	// Trigger any attacking effects
+		currMon.setTotalDamage(result.get(CLAW).intValue());
+		if (currMon.isInTokyo()) {
+			for (int mon = 0; mon < monsters.size(); mon++) {
+				if (!monsters.get(mon).equals(currMon)) {
+					gamePhase.setPhase(Phase.TAKING_DAMAGE, monsters.get(mon), currMon); // Trigger defensive effects of attacked monster
+					monsters.get(mon).decHealth(currMon.getTotalDamage());
+				}
+			}
+			return null;
+		} else {
+			// boolean monsterInTokyo = false;
+			for (int mon = 0; mon < monsters.size(); mon++) {
+				if (monsters.get(mon).isInTokyo()) {
+					// monsterInTokyo = true;
+					gamePhase.setPhase(Phase.TAKING_DAMAGE, monsters.get(mon), currMon);
+					monsters.get(mon).decHealth(currMon.getTotalDamage());
+					return players.get(mon); // The attacked player
+				}
+			}
+			// No monster in Tokyo so move in and gain 1 star
+			currMon.setInTokyo(gamePhase, true);
+			currMon.incStars(1);
+			return null;
+		}
+	}
+
+	/**
+	 * Buys a card from the store if the monster has enough energy
+	 * @param monster the monster whose player is buying the card
+	 * @param cardIndex the index, in the store, of the card that is being bought
+	 * @param deck the games deck
+	 * @param gamePhase the game phase
+	 * @return if a car was bought or not
+	 */
+	public boolean buy(Monster monster, int cardIndex, Deck deck, GamePhase gamePhase) {
 		ArrayList<StoreCard> store = deck.getStore();
-		String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have "
-		+ monster.getEnergy() + " energy) [#/-1]:" + deck + "\n";
-		String answer = Server.sendMessage(player, msg);
-		int buy = Integer.parseInt(answer);
-		if ((buy >= 0) && (monster.getEnergy() >= (store.get(buy).getCost()
+		if ((cardIndex >= 0 && cardIndex < 3) && (monster.getEnergy() >= (store.get(cardIndex).getCost()
 				- monster.getCostReduction()))) {
-			StoreCard boughtCard = deck.buyFromStore(buy);
+			StoreCard boughtCard = deck.buyFromStore(cardIndex);
 			if (boughtCard.isDiscard()) {
 				gamePhase.setPhase(Phase.DISCARDING, monster, null);
 			} else {
@@ -161,7 +213,12 @@ public class RuleBook {
 			}
 			// Deduct the cost of the card from energy
 			monster.decEnergy(boughtCard.getCost() - monster.getCostReduction());
+			return true;
+		} else if (monster.getEnergy() >= 2) { // Can afford reseting store
+			deck.resetStore();
+			monster.decEnergy(2);
 		}
+		return false;
 	}
 
 	/**
@@ -169,27 +226,50 @@ public class RuleBook {
 	 * @return if the game has ended
 	 */
 	public boolean gameEnded() {
-		int alive = 0;
-		String aliveMonster = "";
+		Player victorByStars = victoryByStars();
+		if (victoryByStars() != null) {
+			for (int player = 0; player < players.size(); player++) {
+				Server.sendMessage(players.get(player), "Victory: " + victorByStars.getMonster().getName() + " has won by stars\n");	
+			}
+			return true;
+		}
+
+		Player victorBySurviving = victoryBySurviving();
+		if (victorBySurviving != null) {
+			for (int player = 0; player < players.size(); player++) {
+				Server.sendMessage(players.get(player), "Victory: " + victorBySurviving.getMonster().getName() + " has won by being the only one alive\n");
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private Player victoryByStars() {
 		for (int player = 0; player < players.size(); player++) {
 			Monster mon = players.get(player).getMonster();
 			if (mon.getStars() >= VICTORY_STARS) {
 				for (int i = 0; i < players.size(); i++) {
 					Server.sendMessage(players.get(i), "Victory: " + mon.getName() + " has won by stars\n");
 				}
-				return true;
+				return players.get(player);
 			}
+		}
+		return null;
+	}
+
+	private Player victoryBySurviving() {
+		int alive = 0;
+		int alivePlayer;
+		for (int player = 0; player < players.size(); player++) {
+			Monster mon = players.get(player).getMonster();
 			if (mon.isAlive()) {
 				alive++;
-				aliveMonster = mon.getName();
+				alivePlayer = player;
 			}
 		}
-		if (alive == 1) {
-			for (int i = 0; i < players.size(); i++) {
-				Server.sendMessage(players.get(i), "Victory: " + aliveMonster + " has won by being the only one alive\n");
-			}
-			return true;
+		if (alive == 1 && alivePlayer != null) {
+			return alivePlayer;
 		}
-		return false;
+		return null;
 	}
 }

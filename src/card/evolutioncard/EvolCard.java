@@ -2,6 +2,9 @@ package card.evolutioncard;
 
 import card.Card;
 
+/**
+ * Super class of all the evolution cards
+ */
 public abstract class EvolCard implements Card<EvolEffect> {
 	private String name;
 	private boolean temporary;

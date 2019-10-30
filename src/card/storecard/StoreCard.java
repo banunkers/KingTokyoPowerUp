@@ -3,6 +3,9 @@ package card.storecard;
 import card.Card;
 import card.storecard.StoreEffect;
 
+/**
+ * The super class of all the store cards
+ */
 public abstract class StoreCard implements Card<StoreEffect> {
 	private String name;
 	private int cost;

@@ -67,7 +67,12 @@ public class Game {
 
 				// Decide to buy things for energy
 				gamePhase.setPhase(Phase.BUYING, currMon, null);
-				ruleBook.buy(currPlayer, deck, gamePhase);
+				String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have "
+					+ currMon.getEnergy() + " energy) [#/-1]:" + deck + "\n";
+				String answer = Server.sendMessage(currPlayer, msg);
+				int buy = Integer.parseInt(answer);
+				if (buy >= 0)	// -1 to not do anything 
+					ruleBook.buy(currMon, buy, deck, gamePhase);
 
 				// 8. Check victory conditions
 				if (ruleBook.gameEnded()) {
