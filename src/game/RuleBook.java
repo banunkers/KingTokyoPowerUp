@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import card.Deck;
 import card.evolutioncard.EvolCard;
+import card.storecard.StoreCard;
 import dice.Dice;
 import dice.Util;
 import monster.Monster;
@@ -31,6 +32,23 @@ public class RuleBook {
 	}
 
 	/**
+	 * Handles the start of a players round.
+	 * Checks if they are still alive and if they are inside tokyo they will be rewared
+	 * @param monster the monster whos turn it is
+	 * @return if the monster is still alive
+	 */
+	public boolean startingPhase(Monster monster, GamePhase gamePhase) {
+		if (monster.isAlive()) {
+			if (monster.isInTokyo()) {
+				monster.incStars(1);
+			}
+		} else {
+			monster.setInTokyo(gamePhase, false);
+		}
+		return monster.isAlive();
+	}
+
+	/**
 	 * Handles the rolling phase of the game for each player.
 	 * Lets the player choose if they want to reroll
 	 * @param player the player whos turn it is
@@ -48,17 +66,17 @@ public class RuleBook {
 		
 		// Reroll the chosen dice
 		if (Integer.parseInt(reroll[0]) != 0) {
-			diceUtil.reroll(dice, reroll);
+			diceUtil.selectReroll(dice, reroll);
+			diceUtil.replaceRerolled(dice);
 		}
 	}
 
 	/**
 	 * Resolves the result of the dice rolled by a player and applies it to the monsters
-	 * @param currMonID the ID of monster who rolled the dice
+	 * @param currPlayer the player whos dice is getting resolved
 	 * @param result the rolled dice
 	 */
-	public void resolveDice(int currPlayerID, HashMap<Dice, Integer> result, GamePhase gamePhase) {
-		Player currPlayer = players.get(currPlayerID);
+	public void resolveDice(Player currPlayer, HashMap<Dice, Integer> result, GamePhase gamePhase) {
 		Monster currMon = currPlayer.getMonster();
 		
 		if (result.containsKey(HEART)) { 
@@ -128,21 +146,21 @@ public class RuleBook {
 
 	public void buy(Player player, Deck deck, GamePhase gamePhase) {
 		Monster monster = player.getMonster();
+		ArrayList<StoreCard> store = deck.getStore();
 		String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have "
 		+ monster.getEnergy() + " energy) [#/-1]:" + deck + "\n";
 		String answer = Server.sendMessage(player, msg);
 		int buy = Integer.parseInt(answer);
-		if ((buy > 0) && (monster.getEnergy() >= (deck.store[buy].getCost()
+		if ((buy >= 0) && (monster.getEnergy() >= (store.get(buy).getCost()
 				- monster.getCostReduction()))) {
-			if (deck.store[buy].isDiscard()) {
+			StoreCard boughtCard = deck.buyFromStore(buy);
+			if (boughtCard.isDiscard()) {
 				gamePhase.setPhase(Phase.DISCARDING, monster, null);
 			} else {
-				monster.addStoreCard(deck.store[buy]);
+				monster.addStoreCard(boughtCard);
 			}
 			// Deduct the cost of the card from energy
-			monster.decEnergy(deck.store[buy].getCost() - monster.getCostReduction());
-			// Draw a new card from the deck to replace the card that was bought
-			deck.store[buy] = deck.deck.remove(0);
+			monster.decEnergy(boughtCard.getCost() - monster.getCostReduction());
 		}
 	}
 

@@ -25,16 +25,23 @@ public class Util {
 	}
 	
 	/**
-	 * Rerolls the specified dice
+	 * Removes the selected dice, that the player wants to reroll, from the players dice list
 	 * @param dice the dice list 
-	 * @param reroll the index (starting at 1) of dice to reroll
+	 * @param reroll the indices (starting at 1) of dice to reroll
 	 */
-	public void reroll(ArrayList<Dice> dice, String[] reroll) {
+	public void selectReroll(ArrayList<Dice> dice, String[] reroll) {
 		// Remove the specified dice
 		for (int i = 0; i < reroll.length; i++) {
 			dice.remove(Integer.parseInt(reroll[i]) - 1);
 		}
-		// Append newly rolled dice
+	}
+
+	/**
+	 * Appends newly rolled dice to the players dice
+	 * @param dice the players dice
+	 */
+	public void replaceRerolled(ArrayList<Dice> dice) {
+		// Append new dice
 		dice.addAll(roll(6 - dice.size()));
 	}
 }

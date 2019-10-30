@@ -10,8 +10,8 @@ import monster.Monster;
  * Handles all of the decks
  */
 public class Deck {
-	public ArrayList<StoreCard> deck;
-	public StoreCard[] store = new StoreCard[3];
+	private ArrayList<StoreCard> deck;
+	private ArrayList<StoreCard> store = new ArrayList<StoreCard>();
 	
 	/**
 	 * Creates a deck containing the store cards and gives each monster their shuffled evolution cards
@@ -28,7 +28,7 @@ public class Deck {
 		
 		// Start the game with 3 cards face up in the store
 		for (int i = 0; i < 3; i++) {
-			store[i] = deck.remove(0);
+			store.add(deck.remove(0));
 		}
 	}
 
@@ -37,11 +37,12 @@ public class Deck {
 	}
 
 	/**
-	 * Resets the three cards in the store
+	 * Resets the three cards in the store by replacing them with new ones
 	 */
 	public void resetStore() {
-		for (int i = 0; i < store.length; i++) {
-			store[i] = deck.remove(0);
+		store.clear();
+		for (int i = 0; i < 3; i++) {
+			store.add(deck.get(0));
 		}
 	}
 
@@ -49,8 +50,29 @@ public class Deck {
 	public String toString() {
 		String returnString = "";
 		for (int i = 0; i < 3; i++) {
-			returnString += "\t[" + i + "] " + store[i] + ":";
+			returnString += "\t[" + i + "] " + store.get(i) + ":";
 		}
 		return returnString;
+	}
+
+	public ArrayList<StoreCard> getDeck() {
+		return this.deck;
+	}
+
+	public ArrayList<StoreCard> getStore() {
+		return this.store;
+	}
+
+	/**
+	 * Buys a card from the store and replaces it with a new one
+	 * @param index the index of the card
+	 * @return the card bought or null if no card in the store
+	 */
+	public StoreCard buyFromStore(int index) {
+		if (this.store.size() > 0) {
+			this.store.add(this.deck.get(0));
+			return this.store.remove(index);
+		}
+		return null;
 	}
 }

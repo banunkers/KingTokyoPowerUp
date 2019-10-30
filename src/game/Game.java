@@ -38,17 +38,9 @@ public class Game {
 				Player currPlayer = players.get(currPlayerID);
 				Monster currMon = currPlayer.getMonster();
 
+				// Check if monster is alive and reward with star if inside Tokyo
 				gamePhase.setPhase(Phase.START, currMon, null);
-				
-				// Skip if the monster is already dead
-				if (!currMon.isAlive()) {
-					currMon.setInTokyo(gamePhase, false);
-					continue;
-				}
-
-				if (currMon.isInTokyo()) {
-					currMon.incStars(1);
-				}
+				ruleBook.startingPhase(currMon, gamePhase);
 				
 				// DIsplay the sate of the game
 				statusUpdate(currPlayer);
@@ -71,7 +63,7 @@ public class Game {
 				// Resolve the dice
 				currMon.setRolledDice(result);
 				gamePhase.setPhase(Phase.RESOLVING, currMon, null);
-				ruleBook.resolveDice(currPlayerID, result, gamePhase);
+				ruleBook.resolveDice(currPlayer, result, gamePhase);
 
 				// Decide to buy things for energy
 				gamePhase.setPhase(Phase.BUYING, currMon, null);
