@@ -22,8 +22,10 @@ public class AlienoidTests {
 
 	@Test
 	public void AlienScourge() {
-		Player alienoidPlayer = new Player(new Alienoid());
-		Player otherPlayer = new Player(new Kong());
+		Player alienoidPlayer = new Player();
+		alienoidPlayer.setMonster(new Alienoid());
+		Player otherPlayer = new Player();
+		otherPlayer.setMonster(new Kong());
 		Monster alienoid = alienoidPlayer.getMonster();
 		Monster otherMon = otherPlayer.getMonster();
 
@@ -32,13 +34,13 @@ public class AlienoidTests {
 		monsters.add(otherMon);
 
 		ArrayList<EvolCard> evolCards = new ArrayList<EvolCard>();
-		evolCards.add(new AlienScourge(monsters));
+		evolCards.add(new AlienScourge());
 		alienoid.setEvolCards(evolCards);
 
 		// Activate and assert
 		int preStarsAlien = alienoid.getStars();
 		int preStarsOther = otherMon.getStars();
-		alienoid.activateEvolCard();
+		alienoid.activateEvolCard(monsters);
 		assertEquals(preStarsAlien + 2, alienoid.getStars());
 
 		// Check other monster no extra stars
@@ -47,8 +49,10 @@ public class AlienoidTests {
 
 	@Test
 	public void funnyLookingButDangerous() {
-		Player alienoidPlayer = new Player(new Alienoid());
-		Player otherPlayer = new Player(new Alienoid());
+		Player alienoidPlayer = new Player();
+		alienoidPlayer.setMonster(new Alienoid());
+		Player otherPlayer = new Player();
+		otherPlayer.setMonster(new Kong());
 		Monster alienoid = alienoidPlayer.getMonster();
 		Monster otherMon = otherPlayer.getMonster();
 
@@ -58,11 +62,11 @@ public class AlienoidTests {
 
 		// Give Alienoid Funny Looking but Dangerous 
 		ArrayList<EvolCard> evolCards = new ArrayList<EvolCard>();
-		evolCards.add(new FunnyLookingButDangerous(monsters));
+		evolCards.add(new FunnyLookingButDangerous());
 		alienoid.setEvolCards(evolCards);
-		alienoid.activateEvolCard();
+		alienoid.activateEvolCard(monsters);
 
-		GamePhase gamePhase = new GamePhase(monsters);
+		GamePhase gamePhase = new GamePhase();
 
 		// Alienoid rolls exactly 3 TWO's
 		HashMap<Dice, Integer> rolled = new HashMap<Dice, Integer>();
@@ -75,7 +79,7 @@ public class AlienoidTests {
 		int alienoidPreHealth = alienoid.getHealth();
 
 		// Resolving dice phase which should trigger evol card
-		gamePhase.setPhase(Phase.RESOLVING, alienoid, null);
+		gamePhase.setPhase(Phase.RESOLVING, alienoid, null, monsters);
 		assertEquals(otherPreHealth - 1, otherMon.getHealth());
 		assertEquals(alienoidPreHealth, alienoid.getHealth());
 
@@ -87,7 +91,7 @@ public class AlienoidTests {
 		alienoid.setRolledDice(rolled);
 
 		// Should be same as before since not 3 TWO's
-		gamePhase.setPhase(Phase.RESOLVING, alienoid, null);
+		gamePhase.setPhase(Phase.RESOLVING, alienoid, null, monsters);
 		assertEquals(otherPreHealth - 1, otherMon.getHealth());
 		assertEquals(alienoidPreHealth, alienoid.getHealth());
 	}

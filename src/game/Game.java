@@ -9,28 +9,33 @@ import card.Deck;
 import dice.Dice;
 import dice.Util;
 import monster.Monster;
+import monster.MonsterFactory;
 import player.Player;
 import server.Server;
 
 public class Game {
-	private ArrayList<Player> players;
 	private Util diceUtil = new Util();
 	private RuleBook ruleBook;
-	private ArrayList<Dice> dice;
+	private GamePhase gamePhase;
 
-	public Game(ArrayList<Player> players) {
-		this.players = players;
+	public Game(ArrayList<Player> players) throws Exception {
+		ArrayList<Monster> monsters = new ArrayList<Monster>();
+		MonsterFactory monFactory = new MonsterFactory();
+		try {
+			monsters = monFactory.getMonsters(players.size());
+		} catch (Exception e) {
+			throw e;	// Not enough monsters for all players
+		}
+		// Assign players one monster each
+		for (int i = 0; i < players.size(); i++) {
+			players.get(i).setMonster(monsters.get(i));
+		}
 		// Shuffle the starting order
 		Collections.shuffle(players);
-
-		ArrayList<Monster> monsters = new ArrayList<Monster>();
-		for (Player player : players) {
-			monsters.add(player.getMonster());
-		}
 		
-		this.ruleBook = new RuleBook(players, monsters);
+		this.ruleBook = new RuleBook();
 		Deck deck = new Deck(monsters);
-		GamePhase gamePhase = new GamePhase(monsters);
+		gamePhase = new GamePhase();
 		
 		// Game loop
 		while (true) {
@@ -40,21 +45,21 @@ public class Game {
 
 				// Check if monster is alive and reward with star if inside Tokyo
 				// skip if already dead
-				gamePhase.setPhase(Phase.START, currMon, null);
-				boolean isAlive = ruleBook.startingPhase(currMon, gamePhase);
+				gamePhase.setPhase(Phase.START, currMon, null, monsters);
+				boolean isAlive = ruleBook.startingPhase(currMon, gamePhase, monsters);
 				if (!isAlive) {
 					continue;
 				}
 				
 				// Display the sate of the game
-				statusUpdate(currPlayer);
+				statusUpdate(currPlayer, players);
 
 				// Begin the roll phase which involves two chances to reroll
-				dice = diceUtil.roll(6);
+				ArrayList<Dice> dice = diceUtil.roll(6);
 				ruleBook.rollPhase(currPlayer, dice, gamePhase);
-				gamePhase.setPhase(Phase.ROLLING, currMon, null);
+				gamePhase.setPhase(Phase.ROLLING, currMon, null, monsters);
 				ruleBook.rollPhase(currPlayer, dice, gamePhase);
-				gamePhase.setPhase(Phase.ROLLING, currMon, null);
+				gamePhase.setPhase(Phase.ROLLING, currMon, null, monsters);
 				
 				// Sum up dice
 				diceUtil.sort(dice);
@@ -66,21 +71,21 @@ public class Game {
 
 				// Resolve the dice
 				currMon.setRolledDice(result);
-				gamePhase.setPhase(Phase.RESOLVING, currMon, null);
-				ruleBook.resolveDice(currPlayer, result, gamePhase);
+				gamePhase.setPhase(Phase.RESOLVING, currMon, null, monsters);
+				ruleBook.resolveDice(currPlayer, result, gamePhase, monsters, players);
 
 				// Decide to buy things for energy
-				gamePhase.setPhase(Phase.BUYING, currMon, null);
+				gamePhase.setPhase(Phase.BUYING, currMon, null, monsters);
 				String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have "
 					+ currMon.getEnergy() + " energy) [#/-1]:" + deck + "\n";
 				String answer = Server.sendMessage(currPlayer, msg);
 				int buy = Integer.parseInt(answer);
 				if (buy >= 0) {	// -1 to not do anything 
-					ruleBook.buy(currMon, buy, deck, gamePhase);
+					ruleBook.buy(currMon, buy, deck, gamePhase, monsters);
 				}
 
 				// Check victory conditions and exit if someone won
-				if (ruleBook.gameEnded()) {
+				if (ruleBook.gameEnded(players)) {
 					System.exit(0);
 				}
 			}
@@ -90,8 +95,9 @@ public class Game {
 	/**
 	 * Informs the player of the state of the game
 	 * @param player the player to inform
+	 * @param players all of the games players
 	 */
-	private void statusUpdate(Player player) {
+	private void statusUpdate(Player player, ArrayList<Player> players) {
 		String status_update = "You are " + player.getMonster().getName() + " and it is your turn. Here are the stats";
 		for (int count = 0; count < players.size(); count++) {
 			Monster mon = players.get(count).getMonster();

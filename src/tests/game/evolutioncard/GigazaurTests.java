@@ -20,8 +20,10 @@ public class GigazaurTests {
 
 	@Test
 	public void defenderOfTokyo() {
-		Player gigazaurPlayer = new Player(new Gigazaur());
-		Player otherPlayer = new Player(new Kong());
+		Player gigazaurPlayer = new Player();
+		gigazaurPlayer.setMonster(new Gigazaur());
+		Player otherPlayer = new Player();
+		otherPlayer.setMonster(new Kong());
 		Monster gigazaur = gigazaurPlayer.getMonster();
 		Monster otherMon = otherPlayer.getMonster();
 
@@ -30,18 +32,18 @@ public class GigazaurTests {
 		monsters.add(otherMon);
 
 		ArrayList<EvolCard> evolCards = new ArrayList<EvolCard>();
-		evolCards.add(new DefenderOfTokyo(monsters));
+		evolCards.add(new DefenderOfTokyo());
 		gigazaur.setEvolCards(evolCards);
-		gigazaur.activateEvolCard();
+		gigazaur.activateEvolCard(monsters);
 
-		GamePhase gamePhase = new GamePhase(monsters);
+		GamePhase gamePhase = new GamePhase();
 
 		gigazaur.incStars(5);
 		otherMon.incStars(5);
 		int gigazaurPreStars = gigazaur.getStars();
 		int otherPreStars = otherMon.getStars();
-		gigazaur.setInTokyo(gamePhase, true);	// Put gigazaur in Tokyo
-		gamePhase.setPhase(Phase.START, gigazaur, null);	// Start of turn
+		gigazaur.setInTokyo(gamePhase, true, monsters);	// Put gigazaur in Tokyo
+		gamePhase.setPhase(Phase.START, gigazaur, null, monsters);	// Start of turn
 
 		assertEquals(otherPreStars - 1, otherMon.getStars());
 		assertEquals(gigazaurPreStars, gigazaur.getStars());
@@ -50,8 +52,8 @@ public class GigazaurTests {
 		gigazaurPreStars = gigazaur.getStars();
 		otherPreStars = otherMon.getStars();
 
-		gigazaur.setInTokyo(gamePhase, false);
-		gamePhase.setPhase(Phase.START, gigazaur, null);
+		gigazaur.setInTokyo(gamePhase, false, monsters);
+		gamePhase.setPhase(Phase.START, gigazaur, null, monsters);
 
 		assertEquals(otherPreStars, otherMon.getStars());
 		assertEquals(gigazaurPreStars, gigazaur.getStars());
@@ -59,8 +61,10 @@ public class GigazaurTests {
 
 	@Test
 	public void radioActiveWaste() {
-		Player gigazaurPlayer = new Player(new Gigazaur());
-		Player otherPlayer = new Player(new Kong());
+		Player gigazaurPlayer = new Player();
+		gigazaurPlayer.setMonster(new Gigazaur());
+		Player otherPlayer = new Player();
+		otherPlayer.setMonster(new Kong());
 		Monster gigazaur = gigazaurPlayer.getMonster();
 		Monster otherMon = otherPlayer.getMonster();
 
@@ -69,7 +73,7 @@ public class GigazaurTests {
 		monsters.add(otherMon);
 
 		ArrayList<EvolCard> evolCards = new ArrayList<EvolCard>();
-		evolCards.add(new RadioactiveWaste(monsters));
+		evolCards.add(new RadioactiveWaste());
 		gigazaur.setEvolCards(evolCards);
 		
 		int preEnergy = gigazaur.getEnergy();
@@ -77,7 +81,7 @@ public class GigazaurTests {
 		int preHealth = gigazaur.getHealth();
 
 		// Activate and assert
-		gigazaur.activateEvolCard();
+		gigazaur.activateEvolCard(monsters);
 		assertEquals(preEnergy + 2, gigazaur.getEnergy());
 		assertEquals(preHealth + 1, gigazaur.getHealth());
 	}

@@ -11,12 +11,8 @@ import monster.Monster;
  */
 public class IronCurtainEffect extends EvolEffect {
 
-	public IronCurtainEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+	public void trigger(Monster monster, Monster currMonster, Phase phase, ArrayList<Monster> monsters) {
 		if (phase == Phase.YIELDING_TOKYO && !currMonster.equals(monster)) {
 			currMonster.decHealth(1);
 		}

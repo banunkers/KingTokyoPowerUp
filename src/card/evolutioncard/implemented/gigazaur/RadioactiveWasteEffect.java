@@ -11,12 +11,8 @@ import monster.Monster;
  */
 public class RadioactiveWasteEffect extends EvolEffect {
 
-	public RadioactiveWasteEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+	public void trigger(Monster monster, Monster currMonster, Phase phase, ArrayList<Monster> monsters) {
 		monster.incEnergy(2);
 		monster.incHealth(1);
 	}

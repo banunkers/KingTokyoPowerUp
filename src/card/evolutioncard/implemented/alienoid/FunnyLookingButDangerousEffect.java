@@ -12,12 +12,8 @@ import monster.Monster;
  */
 public class FunnyLookingButDangerousEffect extends EvolEffect {
 
-	public FunnyLookingButDangerousEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+	public void trigger(Monster monster, Monster currMonster, Phase phase, ArrayList<Monster> monsters) {
 		if (phase == Phase.RESOLVING && monster.equals(currMonster)) {
 			if (monster.getRolledDice().containsKey(new Dice(2))) {
 				int numTWO = monster.getRolledDice().get(new Dice(2)).intValue();

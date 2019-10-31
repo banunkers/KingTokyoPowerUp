@@ -11,12 +11,8 @@ import monster.Monster;
  */
 public class AlienScourgeEffect extends EvolEffect {
 
-	public AlienScourgeEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void trigger(Monster monster, Monster curMonster, Phase phase) {
+	public void trigger(Monster monster, Monster curMonster, Phase phase, ArrayList<Monster> monsters) {
 		monster.incStars(2);
 	}
 

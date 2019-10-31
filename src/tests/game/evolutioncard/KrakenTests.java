@@ -19,8 +19,10 @@ public class KrakenTests {
 
 	@Test
 	public void healingRain() {
-		Player krakenPlayer = new Player(new Kraken());
-		Player otherPlayer = new Player(new Kong());
+		Player krakenPlayer = new Player();
+		krakenPlayer.setMonster(new Kraken());
+		Player otherPlayer = new Player();
+		otherPlayer.setMonster(new Kong());
 		Monster kraken = krakenPlayer.getMonster();
 		Monster otherMon = otherPlayer.getMonster();
 
@@ -29,7 +31,7 @@ public class KrakenTests {
 		monsters.add(otherMon);
 
 		ArrayList<EvolCard> evolCards = new ArrayList<EvolCard>();
-		evolCards.add(new HealingRain(monsters));
+		evolCards.add(new HealingRain());
 		kraken.setEvolCards(evolCards);
 
 		kraken.decHealth(5);
@@ -37,15 +39,17 @@ public class KrakenTests {
 		int krakenPreHealth = kraken.getHealth();
 		int otherPreHealth = kraken.getHealth();
 
-		kraken.activateEvolCard();
+		kraken.activateEvolCard(monsters);
 		assertEquals(krakenPreHealth + 2, kraken.getHealth());
 		assertEquals(otherPreHealth, otherMon.getHealth());
 	}
 
 	@Test
 	public void eaterOfSouls() {
-		Player krakenPlayer = new Player(new Kraken());
-		Player otherPlayer = new Player(new Kong());
+		Player krakenPlayer = new Player();
+		krakenPlayer.setMonster(new Kraken());
+		Player otherPlayer = new Player();
+		otherPlayer.setMonster(new Kong());
 		Monster kraken = krakenPlayer.getMonster();
 		Monster otherMon = otherPlayer.getMonster();
 
@@ -54,24 +58,24 @@ public class KrakenTests {
 		monsters.add(otherMon);
 
 		ArrayList<EvolCard> evolCards = new ArrayList<EvolCard>();
-		evolCards.add(new EaterOfSouls(monsters));
+		evolCards.add(new EaterOfSouls());
 		kraken.setEvolCards(evolCards);
 		
-		GamePhase gamePhase = new GamePhase(monsters);
+		GamePhase gamePhase = new GamePhase();
 		
 		// Check max health now +2
 		int krakenPreMaxHealth = kraken.getMaxHealth();
-		kraken.activateEvolCard();
+		kraken.activateEvolCard(monsters);
 		assertEquals(krakenPreMaxHealth + 2, kraken.getMaxHealth());
 
 		int krakenPreHealth = kraken.getHealth();
-		kraken.setInTokyo(gamePhase, true);	// take control of Tokyo
+		kraken.setInTokyo(gamePhase, true, monsters);	// take control of Tokyo
 		assertEquals(krakenPreHealth + 1, kraken.getHealth());
 
-		kraken.setInTokyo(gamePhase, false); // yield Tokyo
+		kraken.setInTokyo(gamePhase, false, monsters); // yield Tokyo
 		assertEquals(krakenPreHealth + 1, kraken.getHealth());
 
-		kraken.setInTokyo(gamePhase, true);	// take control of Tokyo
+		kraken.setInTokyo(gamePhase, true, monsters);	// take control of Tokyo
 		assertEquals(krakenPreHealth + 2, kraken.getHealth());
 	}
 }

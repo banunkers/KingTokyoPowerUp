@@ -15,10 +15,10 @@ public class Player {
 	public DataOutputStream outToClient = null;
 	private Monster monster;
 
-	public Player(Monster monster) {
+	public void setMonster(Monster monster) {
 		this.monster = monster;
 	}
-
+	
 	public Monster getMonster() {
 		return monster;
 	}

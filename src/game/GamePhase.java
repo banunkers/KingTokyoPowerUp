@@ -9,11 +9,6 @@ import monster.Monster;
 
 public class GamePhase {
 	private Phase currPhase;
-	private ArrayList<Monster> monsters;
-
-	public GamePhase(ArrayList<Monster> monsters) {
-		this.monsters = monsters;
-	}
 
 	public Phase getPhase() {
 		return currPhase;
@@ -24,17 +19,18 @@ public class GamePhase {
 	 * @param phase the game phase
 	 * @param monster the current monster
 	 * @param attacker optional parameter containing the attacking monster
+	 * @param monsters the monsters in the game
 	 */
-	public void setPhase(Phase phase, Monster monster, Monster attacker) {
+	public void setPhase(Phase phase, Monster monster, Monster attacker, ArrayList<Monster> monsters) {
 		currPhase = phase;
 		for (StoreCard card : monster.getStoreCards()) {
-			card.getEffect().checkTrigger(monster, currPhase, attacker);
+			card.getEffect().checkTrigger(monster, currPhase, attacker, monsters);
 		}
 
 		// Go through all the active permanent evolution cards and check if they should trigger
 		for (Monster monWithEvo : monsters) {
 			for (EvolCard card : monWithEvo.getActiveEvolCards()) {
-				card.getEffect().trigger(monWithEvo, monster, currPhase);
+				card.getEffect().trigger(monWithEvo, monster, currPhase, monsters);
 			}
 		}
 	}

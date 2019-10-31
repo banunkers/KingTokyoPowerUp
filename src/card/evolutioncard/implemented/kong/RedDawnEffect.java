@@ -11,12 +11,8 @@ import monster.Monster;
  */
 public class RedDawnEffect extends EvolEffect {
 
-	public RedDawnEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+	public void trigger(Monster monster, Monster currMonster, Phase phase, ArrayList<Monster> monsters) {
 		for (Monster mon : monsters) {
 			if (!mon.equals(monster))
 				mon.decHealth(2);

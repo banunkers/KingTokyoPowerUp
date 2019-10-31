@@ -17,14 +17,9 @@ import card.evolutioncard.implemented.kraken.HealingRain;
 import monster.Monster;
 
 /**
- * Creates all of the implemented store cards
+ * Creates all of the implemented store cards and evolution cards
  */
 public class CardFactory {
-	private ArrayList<Monster> monsters;
-
-	public CardFactory(ArrayList<Monster> monsters) {
-		this.monsters = monsters;
-	}
 
 	/**
 	 * Creates a shuffled array list containing all of the currently implemented store cards
@@ -32,13 +27,13 @@ public class CardFactory {
 	 */
 	public ArrayList<StoreCard> getStoreCards() {
 		ArrayList<StoreCard> cards = new ArrayList<StoreCard>();
-		cards.add(new AcidAttack(monsters));
-		cards.add(new AlienMetabolism(monsters));
-		cards.add(new AlphaMonster(monsters));
-		cards.add(new ApartmentBuilding(monsters));
-		cards.add(new ArmorPlating(monsters));
-		cards.add(new ComuterTrain(monsters));
-		cards.add(new CornerStore(monsters));
+		cards.add(new AcidAttack());
+		cards.add(new AlienMetabolism());
+		cards.add(new AlphaMonster());
+		cards.add(new ApartmentBuilding());
+		cards.add(new ArmorPlating());
+		cards.add(new ComuterTrain());
+		cards.add(new CornerStore());
 		Collections.shuffle(cards);
 		return cards;
 	}
@@ -53,20 +48,20 @@ public class CardFactory {
 		ArrayList<EvolCard> cards = new ArrayList<EvolCard>();
 		switch (monster.getName()) {
 			case "Alienoid":
-				cards.add(new AlienScourge(monsters));
-				cards.add(new FunnyLookingButDangerous(monsters));
+				cards.add(new AlienScourge());
+				cards.add(new FunnyLookingButDangerous());
 				break;
 			case "Gigazaur":
-				cards.add(new DefenderOfTokyo(monsters));
-				cards.add(new RadioactiveWaste(monsters));
+				cards.add(new DefenderOfTokyo());
+				cards.add(new RadioactiveWaste());
 				break;
 			case "Kong":
-				cards.add(new IronCurtain(monsters));
-				cards.add(new RedDawn(monsters));
+				cards.add(new IronCurtain());
+				cards.add(new RedDawn());
 				break;
 			case "Kraken":
-				cards.add(new EaterOfSouls(monsters));
-				cards.add(new HealingRain(monsters));
+				cards.add(new EaterOfSouls());
+				cards.add(new HealingRain());
 				break;
 		}
 		Collections.shuffle(cards);

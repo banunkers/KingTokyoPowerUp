@@ -11,12 +11,8 @@ import monster.Monster;
  */
 public class HealingRainEffect extends EvolEffect {
 
-	public HealingRainEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+	public void trigger(Monster monster, Monster currMonster, Phase phase, ArrayList<Monster> monsters) {
 		monster.incHealth(2);
 	}
 

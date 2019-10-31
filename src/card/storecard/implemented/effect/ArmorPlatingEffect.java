@@ -11,20 +11,16 @@ import monster.Monster;
  */
 public class ArmorPlatingEffect extends StoreEffect {
 
-	public ArmorPlatingEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
+	public void checkTrigger(Monster monster, Phase phase, Monster attacker, ArrayList<Monster> monsters) {
 		if (!done) {
-			trigger(monster, attacker);
+			trigger(monster, attacker, monsters);
 			done = true;
 		}
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker) {
+	protected void trigger(Monster monster, Monster attacker, ArrayList<Monster> monsters) {
 		// Inc the armor of monster to "ignore" damage of 1
 		monster.incArmor(1);
 	}

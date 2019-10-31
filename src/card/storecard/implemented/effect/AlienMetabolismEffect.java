@@ -11,20 +11,16 @@ import monster.Monster;
  */
 public class AlienMetabolismEffect extends StoreEffect {
 
-	public AlienMetabolismEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
+	public void checkTrigger(Monster monster, Phase phase, Monster attacker, ArrayList<Monster> monsters) {
 		if (!done && (phase == Phase.BUYING)) {
-			trigger(monster, null);
+			trigger(monster, null, monsters);
 			done = true;
 		}
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker) {
+	protected void trigger(Monster monster, Monster attacker, ArrayList<Monster> monsters) {
 		monster.incCostReduction(1);
 	}
 }

@@ -11,19 +11,15 @@ import monster.Monster;
  */
 public class CornerStoreEffect extends StoreEffect {
 
-	public CornerStoreEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
+	public void checkTrigger(Monster monster, Phase phase, Monster attacker, ArrayList<Monster> monsters) {
 		if (phase == Phase.DISCARDING) {
-			trigger(monster, null);
+			trigger(monster, null, monsters);
 		}
 	}
 
 	@Override
-	protected void trigger(Monster monster, Monster attacker) {
+	protected void trigger(Monster monster, Monster attacker, ArrayList<Monster> monsters) {
 		monster.incStars(1);
 	}
 

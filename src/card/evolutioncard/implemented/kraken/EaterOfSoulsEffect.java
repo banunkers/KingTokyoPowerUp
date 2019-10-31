@@ -12,12 +12,8 @@ import monster.Monster;
  */
 public class EaterOfSoulsEffect extends EvolEffect {
 
-	public EaterOfSoulsEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+	public void trigger(Monster monster, Monster currMonster, Phase phase, ArrayList<Monster> monsters) {
 		if (monster.equals(currMonster)) { // If its krakens turn
 			if (!done) {
 				monster.setMaxHealth(12);

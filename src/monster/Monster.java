@@ -112,27 +112,28 @@ public abstract class Monster {
 	/**
 	 * Adds an evolution card to the monsters active evolutions and checks if it should be triggered
 	 * @param activatedEvol the evolution card to add
+	 * @param monsters the monsters in the game
 	 */
-	public void addActiveEvolCard(EvolCard activatedEvol) {
+	public void addActiveEvolCard(EvolCard activatedEvol, ArrayList<Monster> monsters) {
 		this.activeEvolCards.add(activatedEvol);
-		activatedEvol.getEffect().trigger(this, this, null);
+		activatedEvol.getEffect().trigger(this, this, null, monsters);
 	}
 
 	/**
 	 * Activates one of the monsters evolution cards, if its a temporary evolution card
 	 * it will be played directly.
-	 * 
+	 * @param monsters the monsters in the game
 	 * @return the activated evolution card or null if the monster didn't
 	 * have any evolution card to activate
 	 */
-	public EvolCard activateEvolCard() {
+	public EvolCard activateEvolCard(ArrayList<Monster> monsters) {
 		EvolCard activated = null;
 		if (evolCards.size() > 0) {
 			activated = evolCards.remove(0);
 			if (activated.isTemporary()) {
-				activated.getEffect().trigger(this, null, null);
+				activated.getEffect().trigger(this, null, null, monsters);
 			} else {
-				this.addActiveEvolCard(activated);
+				this.addActiveEvolCard(activated, monsters);
 			}
 			return activated;
 		}
@@ -258,12 +259,13 @@ public abstract class Monster {
 	 * Changes the monsters position
 	 * @param inTokyo if the monster should move to or leave Tokyo
 	 * @param gamePhase the game phase
+	 * @param monsters the monsters in the game
 	 */
-	public void setInTokyo(GamePhase gamePhase, boolean inTokyo) {
+	public void setInTokyo(GamePhase gamePhase, boolean inTokyo, ArrayList<Monster> monsters) {
 		if (!inTokyo) { // Monster is yielding tokyo
-			gamePhase.setPhase(Phase.YIELDING_TOKYO, this, null);
+			gamePhase.setPhase(Phase.YIELDING_TOKYO, this, null, monsters);
 		} else {
-			gamePhase.setPhase(Phase.TAKING_TOKYO, this, null);
+			gamePhase.setPhase(Phase.TAKING_TOKYO, this, null, monsters);
 		}
 		this.inTokyo = inTokyo;
 	}

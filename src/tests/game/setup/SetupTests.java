@@ -28,7 +28,9 @@ public class SetupTests {
 
 		ArrayList<Player> players = new ArrayList<Player>();
 		for (Monster monster : monsters) {
-			players.add(new Player(monster));
+			Player player = new Player();
+			player.setMonster(monster);
+			players.add(player);
 		}
 
 		// Assert that each player was assigned a monster
@@ -50,7 +52,9 @@ public class SetupTests {
 
 		ArrayList<Player> players = new ArrayList<Player>();
 		for (Monster monster : monsters) {
-			players.add(new Player(monster));
+			Player player = new Player();
+			player.setMonster(monster);
+			players.add(player);
 		}
 
 		for (Player player : players) {
@@ -72,7 +76,9 @@ public class SetupTests {
 
 		ArrayList<Player> players = new ArrayList<Player>();
 		for (Monster monster : monsters) {
-			players.add(new Player(monster));
+			Player player = new Player();
+			player.setMonster(monster);
+			players.add(player);
 		}
 
 		for (Player player : players) {

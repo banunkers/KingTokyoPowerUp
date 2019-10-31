@@ -13,15 +13,12 @@ public class Client {
 	private Scanner sc = new Scanner(System.in);
 
 	public Client(boolean bot) {
-		String name = "";
 		Random rnd = ThreadLocalRandom.current();
 		// Server stuffs
 		try {
 			Socket aSocket = new Socket("localhost", 2048);
 			DataOutputStream outToServer = new DataOutputStream(aSocket.getOutputStream());
 			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(aSocket.getInputStream()));
-			name = inFromServer.readLine();
-			System.out.println(name);
 
 			while (true) {
 				String[] message = inFromServer.readLine().split(":");

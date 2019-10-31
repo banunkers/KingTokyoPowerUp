@@ -19,7 +19,7 @@ public class Deck {
 	 * @param monsters the monsters playing
 	 */
 	public Deck(ArrayList<Monster> monsters) {
-		CardFactory cardFactory = new CardFactory(monsters);
+		CardFactory cardFactory = new CardFactory();
 		deck = cardFactory.getStoreCards();
 
 		// Create the evolution cards for each monster

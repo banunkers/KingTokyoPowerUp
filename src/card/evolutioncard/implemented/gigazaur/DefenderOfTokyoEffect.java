@@ -11,12 +11,8 @@ import monster.Monster;
  */
 public class DefenderOfTokyoEffect extends EvolEffect {
 
-	public DefenderOfTokyoEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void trigger(Monster monster, Monster currMonster, Phase phase) {
+	public void trigger(Monster monster, Monster currMonster, Phase phase, ArrayList<Monster> monsters) {
 		if (phase == Phase.START && monster.equals(currMonster)) {
 			if (monster.isInTokyo()) {
 				for (Monster mon : monsters) {

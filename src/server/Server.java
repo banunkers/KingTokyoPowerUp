@@ -9,19 +9,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import game.Game;
-import monster.Monster;
-import monster.MonsterFactory;
 import player.Player;
 
 public class Server {
 	private static Scanner sc = new Scanner(System.in);
-	private MonsterFactory monFactory = new MonsterFactory();
-	private ArrayList<Player> players = new ArrayList<Player>();
 	
 	/**
 	 * Starts a King of Tokyo: Power Up server with the specified number of players
 	 * @param args the number of players
-	 * @throws Exception 
+	 * @throws Exception no specified amount of players
 	 */
 	public static void main(String[] args) throws Exception {
 		int numPlayers;
@@ -38,31 +34,23 @@ public class Server {
 	}
 
 	public Server(int numPlayers) throws Exception {
-		ArrayList<Monster> monsters = new ArrayList<Monster>();
-		try {
-			monsters = monFactory.getMonsters(numPlayers);
-		} catch (Exception e) {
-			throw e;
-		}
-
-		for (Monster monster : monsters) {
-			players.add(new Player(monster));
-		}
-
 		// Server stuffs
+		ArrayList<Player> players = new ArrayList<Player>();
+		for (int i = 0; i < numPlayers; i++) {
+			players.add(new Player());
+		}
+
 		try {
 			ServerSocket aSocket = new ServerSocket(2048);
 			for (int onlineClient = 0; onlineClient < numPlayers; onlineClient++) {
-				Monster mon = players.get(onlineClient).getMonster();
 				Socket connectionSocket = aSocket.accept();
 				BufferedReader inFromClient = new BufferedReader(
 						new InputStreamReader(connectionSocket.getInputStream()));
 				DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-				outToClient.writeBytes("You are the monster: " + mon.getName() + "\n");
 				players.get(onlineClient).connection = connectionSocket;
 				players.get(onlineClient).inFromClient = inFromClient;
 				players.get(onlineClient).outToClient = outToClient;
-				System.out.println("Connected to " + mon.getName());
+				System.out.println("Connected to player" + onlineClient);
 			}
 		} catch (Exception e) {
 			throw e;

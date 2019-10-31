@@ -12,21 +12,17 @@ import monster.Monster;
  */
 public class AcidAttackEffect extends StoreEffect {
 
-	public AcidAttackEffect(ArrayList<Monster> monsters) {
-		super(monsters);
-	}
-
 	@Override
-	public void checkTrigger(Monster monster, Phase phase, Monster attacker) {
+	public void checkTrigger(Monster monster, Phase phase, Monster attacker, ArrayList<Monster> monsters) {
 		if (!done && phase == Phase.ATTACKING) {
-			trigger(monster, null);
+			trigger(monster, null, monsters);
 			done = true;
 		} else if (phase == Phase.ATTACKING_NO_CLAW) {
-			triggerNoClaw(monster);
+			triggerNoClaw(monster, monsters);
 		}
 	}
 
-	private void triggerNoClaw(Monster monster) {
+	private void triggerNoClaw(Monster monster, ArrayList<Monster> monsters) {
 		if (monster.isInTokyo()) {
 			for (Monster mon : monsters) {
 				if (!mon.equals(monster)) {
@@ -43,7 +39,7 @@ public class AcidAttackEffect extends StoreEffect {
 	}
 
 	@Override
-	public void trigger(Monster monster, Monster attacker) {
+	public void trigger(Monster monster, Monster attacker, ArrayList<Monster> monsters) {
 		monster.incMoreDagame(1);
 	}
 }
