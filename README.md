@@ -1,4 +1,4 @@
-To compile and run all of the unittest run:
+To compile and run all of the unittest run (while in the KingTokyoPowerUp directory):
 > bash compile.sh
 > bash unittest.sh
 
