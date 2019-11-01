@@ -159,7 +159,7 @@ public class GameLogicTests {
 		RuleBook ruleBook = new RuleBook();
 		Deck deck = new Deck(monsters);
 		GamePhase gamePhase = new GamePhase();
-		ArrayList<StoreCard> storePreCards = (ArrayList<StoreCard>) deck.getStore().clone();
+		@SuppressWarnings("unchecked") ArrayList<StoreCard> storePreCards = (ArrayList<StoreCard>) deck.getStore().clone();
 
 		try {
 			Method buy = RuleBook.class.getDeclaredMethod("buy", Monster.class, int.class, Deck.class, GamePhase.class, ArrayList.class);
