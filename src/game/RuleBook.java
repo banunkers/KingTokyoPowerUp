@@ -176,10 +176,8 @@ public class RuleBook {
 			}
 			return null;
 		} else {
-			// boolean monsterInTokyo = false;
 			for (int mon = 0; mon < monsters.size(); mon++) {
 				if (monsters.get(mon).isInTokyo()) {
-					// monsterInTokyo = true;
 					gamePhase.setPhase(Phase.TAKING_DAMAGE, monsters.get(mon), currMon, monsters);
 					monsters.get(mon).decHealth(currMon.getTotalDamage());
 					return players.get(mon); // The attacked player

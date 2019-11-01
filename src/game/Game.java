@@ -32,6 +32,12 @@ public class Game {
 		}
 		// Shuffle the starting order
 		Collections.shuffle(players);
+
+		// Reorder the monster list with the new order of players
+		monsters.clear();
+		for (Player player : players) {
+			monsters.add(player.getMonster());
+		}
 		
 		this.ruleBook = new RuleBook();
 		Deck deck = new Deck(monsters);
